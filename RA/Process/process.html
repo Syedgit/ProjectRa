@@ -1,0 +1,462 @@
+<div class="panel panel-default" ng-keypress="entityClosure($event)"
+	disable-Page-Elements="" disablelevel="PRC">
+	<div class="panel-heading">
+		<span class="panelFontSize" ng-show="editMode"> Process Details
+			<a class="aris_add_link" target="_blank"
+			href="{{processDTO.arisURL}}">Launch ARIS</a>
+		</span> <span class="panelFontSize" ng-hide="editMode">Create New
+			Process</span>
+	</div>
+	<div disable-control-point="PROCESS_EDIT"
+		context-val-id="processDTO.erhUtilKeyList" id="processDetailEvent">
+		<div class="panel-body ng-hide" ng-show="true">
+			<div class="row">
+				<form name="createProcessFormName" id="createProcessForm"
+					role="form" class="form-horizontal">
+					<div class="panel-body">
+						<!--<p class="text-danger" ng-show="createProcessFormName.$dirty && createProcessFormName.$invalid">{{validationMessage}}</p>-->
+						<div class="row" ng-if="statusInfo">
+							<div class="col-md-12 fieldHeight">
+								<span class="{{statusClass}}"><strong>{{statusInfo}}</strong></span>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="form-group col-md-6 fieldHeight">
+								<label for="name" class="col-md-5 required">Business
+									Process Name:</label>
+								<div class="col-md-7">
+									<textarea rows="2" class="form-control" id="name"
+										ng-model="processDTO.processLongName"
+										placeholder="Business Process Name" maxlength="1024" name="processName"
+										required
+										data-tooltip-html-unsafe="<div>{{1024 - processDTO.processLongName.length}} characters left</div>"
+										tooltip-trigger="{{{true: 'focus', false: 'never'}[processDTO.processLongName.length >= 0 || processDTO.processLongName.length == null ]}}"
+										tooltip-placement="top" tooltip-class="bluefill"></textarea>
+									<p class="text-danger"
+										ng-show="createProcessFormName.processName.$touched && createProcessFormName.processName.$error.required">Business
+										Process Name is required</p>
+								</div>
+							</div>
+							<div class="form-group col-md-6 fieldHeight">
+								<label class="col-md-5 required">Geographic Locations: <span
+									ng-show="processDTO.deactiveGeoLocationsMessage.length>0"
+									tooltip="{{processDTO.deactiveGeoLocationsMessage}}"
+									tooltip-trigger tooltip-placement="top"
+									id="deactiveGeoLocationTooltip" class="pull-right"> <orcit-icon
+											icon="warning" class="text-danger pull-right"></orcit-icon>
+								</span>
+								</label>
+								<div class="col-md-7">
+									<orcit-multiselect-treeview id="geoLocations"
+										name="geoLocations" class="orcitMultiselectTreeview"
+										ng-disabled="PROCESS_EDIT"
+										ng-model="nonPersistentProcess.geoLocations"
+										ng-required="true" o-disable-children="true"
+										o-tree-data="geoLocationTreeData"
+										placeholder="Select Geographic Locations">
+									</orcit-multiselect-treeview>
+									<p class="text-danger"
+										ng-show="createProcessFormName.geoLocations.$touched && createProcessFormName.geoLocations.$error.required">
+										Geographic Locations is required</p>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-6 fieldHeight">
+								<label for="processStatement" class="col-md-5 required">Process
+									Statement:</label>
+								<div class="col-md-7">
+									<textarea rows="2" class="form-control"
+										ng-model="processDTO.processStatementText"
+										name="processStatement" id="processStatement"
+										placeholder="Process Statement" maxlength="4000" required
+										data-tooltip-html-unsafe="<div>{{4000 - processDTO.processStatementText.length}} characters left</div>"
+										tooltip-trigger="{{{true: 'focus', false: 'never'}[processDTO.processStatementText.length >= 0 || processDTO.processStatementText.length == null ]}}"
+										tooltip-placement="top" tooltip-class="bluefill"></textarea>
+									<p class="text-danger"
+										ng-show="createProcessFormName.processStatement.$touched && createProcessFormName.processStatement.$error.required">Process
+										Statement is required</p>
+								</div>
+							</div>
+							<div class="form-group col-md-6 fieldHeight">
+								<label for="legalEntities" class="col-md-5 required">Legal
+									Entity(s): <span
+									ng-show="processDTO.deactiveLegalEntitiesMessage.length>0"
+									tooltip="{{processDTO.deactiveLegalEntitiesMessage}}"
+									tooltip-trigger tooltip-placement="top"
+									id="deactiveLegalEntitiesTooltip" class="pull-right"> <orcit-icon
+											icon="warning" class="text-danger pull-right"></orcit-icon>
+								</span>
+								</label>
+								<div class="col-md-7">
+									<orcit-multiselect-treeview id="legalEntities"
+										name="legalEntities" class="orcitMultiselectTreeview"
+										ng-disabled="PROCESS_EDIT"
+										ng-model="nonPersistentProcess.legalEnty" ng-required="true"
+										o-disable-parents="true" o-tree-data="legalEntityTreeData"
+										placeholder="Select Legal Entity">
+									</orcit-multiselect-treeview>
+									<p class="text-danger"
+										ng-show="createProcessFormName.legalEntities.$dirty && createProcessFormName.legalEntities.$error.required">Legal
+										entity is required</p>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-6 fieldHeight">
+
+								<label for="epcfText" class="col-md-5 required">EPCF: <span
+									tooltip="{{processDTO.epcfToolTip}}" tooltip-trigger
+									tooltip-placement="top" id="epcfToolTip" class="pull-right">
+										<orcit-icon icon="info" class="text-info pull-right"></orcit-icon>
+								</span> <span ng-show="processDTO.deactiveEPCFMessage.length>0"
+									tooltip="{{processDTO.deactiveEPCFMessage}}" tooltip-trigger
+									tooltip-placement="top" id="deactiveEPCFMessageTooltip"
+									class="pull-right"> <orcit-icon icon="warning"
+											class="text-danger pull-right"></orcit-icon>
+								</span> <span
+									ng-show="processDTO.requestedStatusLookupCode=='RA_GVRNC_STAT_PEND'"
+									tooltip="{{processDTO.requestApprovalInfo}}" tooltip-trigger
+									tooltip-placement="top" id="alignmentEpcfTooltip"
+									class="pull-right"> <orcit-icon icon="announcement"
+											class="text-danger pull-right"></orcit-icon>
+								</span>
+								</label>
+
+								<div class="col-md-7">
+
+									<input type="text" class="form-control customReadOnly "
+										id="epcf" required ng-model="processDTO.epcfText" name="epcf"
+										readonly="readonly" ng-click="openEpcfTreeModel()"
+										ng-model-options="{updateOn: 'blur'}"
+										placeholder="Select EPCF" />
+									<p class="text-danger"
+										ng-show="createProcessFormName.epcf.$touched && createProcessFormName.epcf.$error.required">EPCF
+										is required</p>
+									<p class="text-danger"
+										ng-show="!editMode && processDTO.requestedEpcfKey && !processDTO.requestApprovalInfo">EPCF
+										will be submitted for approval when new process is saved.</p>
+									<p class="text-danger"
+										ng-show="editMode && processDTO.requestedEpcfKey && !processDTO.requestApprovalInfo">EPCF
+										will be submitted for approval when process is updated.</p>
+								</div>
+							</div>
+
+							<div class="form-group col-md-6 fieldHeight">
+								<label for="erh" class="col-md-5 required">Enterprise
+									Reporting Hierarchy: <span tooltip="{{processDTO.erhToolTip}}"
+									tooltip-trigger tooltip-placement="top" id="erhToolTip"
+									class="pull-right"> <orcit-icon icon="info"
+											class="pull-right text-info"></orcit-icon>
+								</span> <span ng-show="processDTO.deactiveERHMessage.length>0"
+									tooltip="{{processDTO.deactiveERHMessage}}" tooltip-trigger
+									tooltip-placement="top" id="deactiveERHMessageTooltip"
+									class="pull-right"> <orcit-icon icon="warning"
+											class="text-danger pull-right"></orcit-icon>
+								</span>
+								</label>
+								<div class="col-md-7" ng-if="!PROCESS_EDIT">
+									<orcit-multiselect-treeview id="enterpriseReportingHierarchy"
+										name="enterpriseReportingHierarchy"
+										class="orcitMultiselectTreeview"
+										ng-model="nonPersistentProcess.erhKey" ng-required="true"
+										o-max-selectable="1"
+										o-tree-data="enterpriseReportingHierarchyTreeData"
+										placeholder="Select Enterprise Reporting Hierarchy">
+									</orcit-multiselect-treeview>
+									<p class="text-danger"
+										ng-show="createProcessFormName.enterpriseReportingHierarchy.$dirty && createProcessFormName.enterpriseReportingHierarchy.$error.required">
+										Enterprise Reporting Hierarchy is required</p>
+								</div>
+								<div class="col-md-7" ng-if="PROCESS_EDIT">
+									<orcit-multiselect-treeview id="enterpriseReportingHierarchy"
+										name="enterpriseReportingHierarchy"
+										ng-model="nonPersistentProcess.erhKey"
+										class="orcitMultiselectTreeview" ng-required="true"
+										o-max-selectable="1" ng-disabled="PROCESS_EDIT"
+										o-tree-data="enterpriseReportingHierarchyFullTreeData"
+										placeholder="Select Enterprise Reporting Hierarchy">
+									</orcit-multiselect-treeview>
+									<p class="text-danger"
+										ng-show="createProcessFormName.enterpriseReportingHierarchy.$dirty && createProcessFormName.enterpriseReportingHierarchy.$error.required">
+										Enterprise Reporting Hierarchy is required</p>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-6 fieldHeight">
+								<label for="Epcfdescription" class="col-md-5">EPCF
+									Process Description:</label>
+								<div class="col-md-7">
+									<textarea class="form-control" id="Epcfdescription"
+										ng-model="processDTO.epcfDescription"
+										placeholder="EPCF Process Description" readOnly></textarea>
+								</div>
+							</div>
+							<div class="form-group col-md-6 fieldHeight">
+								<label for="CustSegment" class="col-md-5">Customer
+									Segment:</label>
+								<div class="col-md-7">
+									<input type="text" class="form-control" id="CustSegment"
+										name="CustomerSegment"
+										ng-model="processDTO.businessSegmentOrControlFunction"
+										maxlength="512" disabled="disabled"
+										placeholder="Customer Segment">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-6 fieldHeight">
+								<label for="processRefID" class="col-md-5 required">Process
+									Owner: <span
+									ng-show="processDTO.deactiveProcessOwnerMessage.length>0"
+									tooltip="{{processDTO.deactiveProcessOwnerMessage}}"
+									tooltip-trigger tooltip-placement="top"
+									id="deactiveProcessOwnerTooltip" class="pull-right"> <orcit-icon
+											icon="warning" class="text-danger pull-right"></orcit-icon>
+								</span>
+								</label>
+								<div class="col-md-7">
+									<input type="text" class="form-control  customReadOnly"
+										id="prcsOwner" required ng-model="processDTO.prcsOwner"
+										name="prcsOwner" readonly="readonly"
+										ng-click="openPrcsOwner()" ng-disabled="PROCESS_EDIT"
+										ng-model-options="{updateOn: 'blur'}"
+										placeholder="Process Owner" />
+									<p class="text-danger"
+										ng-show="createProcessFormName.prcsOwner.$touched && createProcessFormName.prcsOwner.$error.required">Process
+										Owner is required</p>
+								</div>
+							</div>
+							<div class="form-group col-md-6 fieldHeight">
+								<label for="erhAllLevels" class="col-md-5">ERH All Levels: <span tooltip="{{processDTO.erhAllLevelsToolTip}}"
+									tooltip-trigger tooltip-placement="top" id="erhAllLevelsToolTip"
+									class="pull-right"> <orcit-icon icon="info"
+											class="pull-right text-info"></orcit-icon>
+								</span> <span ng-show="processDTO.deactiveERHAllLevelsMessage.length>0"
+									tooltip="{{processDTO.deactiveERHAllLevelsMessage}}" tooltip-trigger
+									tooltip-placement="top" id="deactiveERHAllLevelsMessageTooltip"
+									class="pull-right"> <orcit-icon icon="warning"
+											class="text-danger pull-right"></orcit-icon>
+								</span>
+								</label>
+								<div class="col-md-7" >
+									<orcit-multiselect-treeview id="enterpriseReportingHierarchyAllLevels"
+										name="enterpriseReportingHierarchyAllLevels"
+										class="orcitMultiselectTreeview"
+										ng-model="nonPersistentProcess.erhAllLevelsKey"
+										o-max-selectable="1" ng-disabled="disableErhAllLevels"
+										o-tree-data="erhAllTreeData"
+										placeholder="Select ERH All Levels">
+									</orcit-multiselect-treeview>
+								</div>
+							</div>
+							
+						</div>
+						<div class="row">
+							<div class="form-group col-md-6 fieldHeight">
+								<label for="userReferenceId" class="col-md-5">Process
+									Reference ID:</label>
+								<div class="col-md-7">
+									<input type="text" class="form-control" id="userReferenceId"
+										ng-model="processDTO.userReferenceId"
+										placeholder="Process Reference ID" maxlength="127"
+										name="userReferenceId"
+										data-tooltip-html-unsafe="<div>{{127 - processDTO.userReferenceId.length}} characters left</div>"
+										tooltip-trigger="{{{true: 'focus', false: 'never'}[processDTO.userReferenceId.length >= 0 || processDTO.userReferenceId.length == null ]}}"
+										tooltip-placement="top" tooltip-class="bluefill">
+								</div>
+							</div>
+							
+						</div>
+					</div>
+					<!-- div panel-body2 end-->
+				</form>
+				<!-- form end -->
+			</div>
+			<!-- div row end -->
+		</div>
+		<!-- div panel-body1 end-->
+	</div>
+	<!-- div disable control point end   -->
+	<div class="panel-footer">
+		<!-- Do not remove span around the button added as require-control-point will be fixed when custom directive changes-->
+		<span><button require-control-point="PROCESS_ADD"
+				context-val-id="processDTO.erhUtilKeyList" ng-hide="editMode"
+				ng-disabled="createProcessFormName.$invalid"
+				ng-class="{disableSaveCls:createProcessFormName.$invalid}"
+				class="btn btn-primary pull-right mousedwncall" type="button"
+				ng-click="submit()">Save</button></span> <span><button
+				require-control-point="PROCESS_EDIT"
+				context-val-id="processDTO.erhUtilKeyList" ng-show="editMode"
+				ng-disabled="createProcessFormName.$invalid"
+				ng-class="{disableSaveCls:createProcessFormName.$invalid}"
+				class="btn btn-primary pull-right mousedwncall" type="button"
+				ng-click="submit()">Update</button></span>
+		<button class="btn btn-default mousedwncall ignoreDisable"
+			type="button" ng-click="handleCancel()">Cancel</button>
+	</div>
+</div>
+<!-- div panel-default end -->
+
+<!-- Process Edit Mode  -->
+<accordion close-others="false"> <accordion-group
+	is-open="processRating.isOpen" ng-show="editMode"
+	disable-Page-Elements='{{processRatingAccordion}}' disablelevel="PRC">
+<accordion-heading> <span class="panelFontSize"
+	ng-click="loadProcessRating(processRating.isOpen)">Process
+	Ratings <i class="pull-right glyphicon"
+	ng-class="{'glyph-chevron-down': processRating.isOpen, 'glyph-chevron-right': !processRating.isOpen}"></i>
+</span> </accordion-heading> <!-- <div class="panel-body"> -->
+<div class="modalForm">
+	<form class="form-horizontal" role="form">
+		<div class="panel-footer">
+			<div class="row">
+				<strong class="gridTextMargin">Inherent Risk Ratings</strong> <span>
+					<button require-control-point="PRT_ADD"
+						context-val-id="processDTO.erhUtilKeyList"
+						class="btn btn-default pull-right mousedwncall gridBtnMargin"
+						type="button" ng-click="gotoQstnPage(1)"
+						ng-disabled="disableRiskRatingBtn">Create Inherent Risk
+						Rating</button>
+				</span>
+			</div>
+		</div>
+		<div kendo-grid="ihtRskRatingGrid" options="ihtRskRatingGridOptions"
+			k-rebind="selectedIRR"></div>
+		<br>
+		<div class="panel-footer">
+			<div class="row">
+				<strong class="gridTextMargin">Process Ratings</strong>
+			</div>
+		</div>
+		<div ng-show="prtStatusInfo">
+			<span class='{{prtStatusInfoClass}}'><strong>{{prtStatusInfo}}</strong></span>
+		</div>
+		<div kendo-grid="processRatingGrid" options="processRatingGridOptions"
+			k-rebind="selectedProcessRating">
+			<div kendo-window="ProcessRatingWin" options="PrtWinOptions"
+				k-modal="true"></div>
+		</div>
+	</form>
+</div>
+</accordion-group> <accordion-group is-open="RnC.isOpen" class="editProcessList"
+	ng-show="editMode"> <accordion-heading>
+<span class="panelFontSize" ng-click="loadRisksAndControls(RnC.isOpen)">Risk
+	& Control <i class="pull-right glyphicon"
+	ng-class="{'glyph-chevron-down': RnC.isOpen, 'glyph-chevron-right': !RnC.isOpen}"></i>
+</span> </accordion-heading>
+<div class="row">
+	<div class="col-md-12 fieldHeight">
+		<span class="{{statusClass}}" ng-if="statusAlignInfo"><strong>{{statusAlignInfo}}</strong></span>
+	</div>
+</div>
+<div id="outergrid" class="editProcessmenu">
+	<div id="alignedrisks"
+		ng-include="'views/alignedrisk/alignedRisks.html'"></div>
+	<br>
+	<div ng-hide="true" id="alignedCtrls"
+		ng-include="'views/alignedctlprocess/alignedCtrls.html'"></div>
+</div>
+</accordion-group> <accordion-group is-open="challengeAccordion.isOpen"
+	ng-show="editMode"
+	disable-Page-Elements="{{challengesAccordion}}"
+	disablelevel="challenges"> <accordion-heading>
+<span class="panelFontSize"
+	ng-click="generateAccordionData(challengeAccordion.isOpen, 'challenges')">Challenges</span>
+<i class="pull-right glyphicon"
+	ng-class="{'glyph-chevron-down': challengeAccordion.isOpen, 'glyph-chevron-right': !challengeAccordion.isOpen}"
+	ng-click="generateAccordionData(challengeAccordion.isOpen, 'challenges')"></i>
+</accordion-heading>
+
+<div class="row">
+	<div class="col-md-10">
+		<div class="form-group clearfix">
+			<p>Challenges are significant risk concerns that require FLU/CF
+				risk reduction activities and/or disparate points of view on the
+				risk and control environment between Risk and the FLU/CF. A
+				challenge may relate to risks and/or controls, ratings, risk
+				reduction activities, and risk acceptance</p>
+		</div>
+	</div>
+
+	<div class="col-md-2">
+		<div class="form-group clearfix">
+			<button class="btn btn-default pull-right mousedwncall"
+				require-control-point="CHALLENGES_ADD"
+				context-val-id="processDTO.erhUtilKeyList"
+				ng-click="addProcessChallenge()">Add Challenge</button>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-12 fieldHeight">
+		<span class="{{challengeStatusClass}}" ng-if="challengeStatusInfo"><strong>{{challengeStatusInfo}}</strong></span>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<div kendo-grid="challengesHeader"
+			k-options="processChallengesOptions" k-rebind="challengesRebind" class="grid-Header-Cell"></div>
+	</div>
+</div>
+</accordion-group> </accordion>
+<div class="panel panel-default" ng-show="editMode">
+	<div class="panel-heading panelFontSize">Audit</div>
+	<div class="panel-body">
+		<div class="audit-block formFooter">
+			<div class="col-md-12">
+				<div class="form-group col-md-6 fieldHeight">
+					<p class=" audit-block col-md-7">Created By:</p>
+					<div class="audit-block col-md-5">{{processDTO.createUserText}}</div>
+				</div>
+				<div class="form-group col-md-6 fieldHeight">
+					<p class="audit-block col-md-6">Original Source System:</p>
+					<div class="audit-block">{{processDTO.origSourceSysName}}</div>
+
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="form-group col-md-6 fieldHeight">
+					<p class="audit-block col-md-7">Created Date:</p>
+					<div class="col-md-5">{{processDTO.createdTimestamp}}</div>
+				</div>
+				<div class="form-group col-md-6 fieldHeight">
+					<p class="audit-block col-md-6 ">Originating Source System Process
+						ID:</p>
+					<div>{{processDTO.externalId}}</div>
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="form-group col-md-6 fieldHeight">
+					<p class="audit-block col-md-7 ">Modified By:</p>
+					<div class="col-md-5">{{processDTO.modifiedUserText}}</div>
+				</div>
+				<div class="form-group col-md-6 fieldHeight">
+					<p class="audit-block col-md-6">RAP Process ID:</p>
+					<div>{{processDTO.processKey}}</div>
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="form-group col-md-6 fieldHeight">
+					<p class="audit-block col-md-7">Modified Date:</p>
+					<div class="col-md-5 ">{{processDTO.modifiedTimestamp}}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div kendo-window="confirmationWin" options="confirmationWinOptions" k-resizable="false"
+	class="confirmationWin"></div>
+
+<div kendo-window="prcsOwnerModal" k-title="'Process Owner Search'" k-resizable="false"
+	k-width="650" k-visible="false" k-draggable="false"
+	k-content="{ url: 'views/process/processOwnerSearchModal.html' }"
+	k-on-open="nameSearchwin = true" k-modal="true"
+	k-on-close="nameSearchwin = false"></div>
+
+<div kendo-window="epcfTreeModalWin" options="epcfTreeModalOptions" 
+	k-modal="true"></div>
+

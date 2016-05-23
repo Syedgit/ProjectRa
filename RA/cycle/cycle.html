@@ -1,0 +1,457 @@
+
+<div class="panel panel-default">
+	<div class="panel-heading panelFontSize">
+		<span ng-hide="editMode">Create New RCSA Cycle</span> <span
+			ng-show="editMode">Edit RCSA Cycle</span>
+	</div>
+	<div class="panel-body ng-hide" ng-show="true">
+		<div>
+			<p class="status {{validationClass}}">{{validationMessage}}</p>
+		</div>
+		<div class="row">
+			<div class="col-md-12 fieldHeight">
+				<span class="{{statusClass}}" ng-if="statusInfo"><strong>{{statusInfo}}</strong></span>
+			</div>
+		</div>
+		<form id="createRcsaFormName" name="createRcsaCycleForm"
+			class="marginLeft10" novalidate k-validate-on-blur="false">
+			<div class="row">
+				<div class="form-group col-md-6 fieldHeight">
+						<label for="rcsaName" class="col-md-5 required">Cycle
+							Name:</label>
+						<div class="col-md-7">
+							<input type="text" class="form-control" id="rcsaName"
+								ng-trim="false" maxlength="1024"
+								ng-model="rcsaCycleDTO.longName" name="rcsaName" required
+								data-required-msg="Cycle Name is required"
+								ng-change="checkCycleName();"
+								ng-disabled="rcsaCycleDTO.cycStatLkupCode=='RA_CANCEL' || rcsaCycleDTO.cycStatLkupCode=='RA_FINAL'"
+								data-tooltip-html-unsafe="<div>{{1024 - rcsaCycleDTO.longName.length}} characters left</div>"
+								tooltip-trigger="{{{true: 'focus', false: 'never'}[rcsaCycleDTO.longName.length >= 0 || rcsaCycleDTO.longName.length == null ]}}"
+								tooltip-placement="top" tooltip-class="bluefill">
+							<p class="text-danger"
+								ng-show="createRcsaCycleForm.rcsaName.$touched && createRcsaCycleForm.rcsaName.$error.required">Cycle
+								Name is required</p>
+							<p class="text-danger"
+								ng-show="createRcsaCycleForm.rcsaName.$error.unique">Cycle
+								Name already exists</p>
+						</div>
+				</div>
+					<div class="form-group col-md-6 fieldHeight">
+						<label for="assessmentDueDate" class="col-md-5 required">Assessments
+							Due Date: </label>
+						<div class="col-md-7">
+							<div class="row">
+								<div class="col-md-5 changeWdhoncycle"
+									ng-show="rcsaCycleDTO.cycStatLkupCode=='RA_CANCEL' || rcsaCycleDTO.cycStatLkupCode=='RA_FINAL'">
+									<input type="text" class="form-control disablebg"
+										name="assessmentDueDate" kendo-date-picker
+										id="assessmentDueDate"
+										ng-model="rcsaCycleDTO.assessmentDueDate" disabled />
+								</div>
+								<div class="col-md-5 changeWdhoncycle"
+									ng-hide="rcsaCycleDTO.cycStatLkupCode=='RA_CANCEL' || rcsaCycleDTO.cycStatLkupCode=='RA_FINAL'">
+									<input type="text" class="form-control" kendo-date-picker
+										name="assessmentDueDate" id="assessmentDueDate"
+										ng-model="rcsaCycleDTO.assessmentDueDate" required
+										k-format="'MM/dd/yyyy'" k-min="'{{today}}'"
+										onkeydown="return false;" />
+								</div>
+								<p class="col-md-12 text-danger"
+									ng-show="createRcsaCycleForm.assessmentDueDate.$touched && createRcsaCycleForm.assessmentDueDate.$error.required">Assessments
+									Due Date is required</p>
+							</div>
+						</div>
+					</div>
+			</div>
+			<div class="row">
+					<div class="form-group col-md-6 fieldHeight">
+						<label for="cyclType" class="col-md-5">Cycle Type:</label>
+						<div class="col-md-7">
+							<select class="form-control" name="cyclType" id="cyclType"
+								ng-model="rcsaCycleDTO.cycTypLkupCode" disabled
+								ng-options="cycleTypeOption.id as cycleTypeOption.text for cycleTypeOption in cycleTypeOptions">
+								<option value="">Select...</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group col-md-6 fieldHeight">
+						<label for="cycleStartDate" class="col-md-5">Actual Cycle
+							Start: </label>
+						<div class="col-md-7">
+							<div class="row">
+								<div class="col-md-5 changeWdhoncycle">
+									<input type="text" class="form-control" id="cycleStartDate"
+										name="cycleStartDate" ng-model="rcsaCycleDTO.cycleStartDate"
+										disabled>
+								</div>
+								<div class="col-md-1">
+									<label class="control-label"> Close:</label>
+								</div>
+								<div class="col-md-5 pull-right changeWdhoncycle">
+									<input type="text" class="form-control" id="cycleEndDate"
+										name="cycleEndDate" ng-model="rcsaCycleDTO.cycleEndDate"
+										disabled>
+								</div>
+
+							</div>
+						</div>
+					</div>
+			</div>
+
+			<div class="row">
+					<div class="form-group col-md-6 fieldHeight">
+						<label for="cycleSts" class="col-md-5">Status:</label>
+						<div class="col-md-7">
+							<select class="form-control" name="cycleSts" id="cycleSts"
+								ng-model="rcsaCycleDTO.cycStatLkupCode" disabled
+								ng-options="cycleStatusOption.id as cycleStatusOption.text for cycleStatusOption in cycleStatusOptions"
+								ng-readonly="rcsaCycleDTO.cycStatLkupCode=='RA_CANCEL'">
+								<option value="">Select...</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group col-md-6 fieldHeight">
+						<label for="cyclClfn" class="col-md-5 required">Classification:</label>
+						<div class="col-md-7" ng-if="!editMode">
+							<select class="form-control" name="cyclClfn" id="cyclClfn"
+								ng-model="rcsaCycleDTO.clasLkupCode" required
+								ng-options="classificationOption.id as classificationOption.text for classificationOption in classificationOptions"
+								ng-change="onChangeClassification()">
+								<option value="">Select...</option>
+							</select>
+							<p class="text-danger"
+								ng-show="createRcsaCycleForm.cyclClfn.$touched && createRcsaCycleForm.cyclClfn.$error.required">Classification
+								is required</p>
+						</div>
+						<div class="col-md-7" ng-if="editMode">
+							<select class="form-control" name="cyclClfn" id="cyclClfn"
+								ng-model="rcsaCycleDTO.clasLkupCode" disabled
+								ng-options="classificationOption.id as classificationOption.text for classificationOption in classificationOptions"
+								ng-change="onChangeClassification()">
+								<option value="">Select...</option>
+							</select>
+						</div>
+
+					</div>
+			</div>
+
+			<div class="row">
+					<div class="form-group col-md-6 fieldHeight">
+						<label for="populate" class="col-md-5">Populate From:</label>
+						<div class="col-md-7">
+							<select class="form-control" name="populate" id="populate"
+								ng-model="rcsaCycleDTO.populateFromRskAssesCycKey"
+								ng-disabled="disablePopulate || disablePopulateFrom"
+								ng-options="populateFromOption.id as populateFromOption.text for populateFromOption in populateFromOptions"
+								ng-readonly="rcsaCycleDTO.cycStatLkupCode=='RA_CANCEL' || rcsaCycleDTO.cycStatLkupCode=='RA_FINAL'">
+								<option value="">Select...</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group col-md-6 fieldHeight">
+						<label for="sumRtglvl" class="col-md-5 required">Summary
+							Rating Level:</label>
+						<div class="col-md-7">
+							<select class="form-control" name="sumRtglvl" id="sumRtglvl"
+								ng-model="rcsaCycleDTO.riskAssesCycRatingScopeId" required
+								ng-disabled="rcsaCycleDTO.cycStatLkupCode=='RA_CANCEL' || rcsaCycleDTO.cycStatLkupCode=='RA_FINAL'"
+								ng-options="summaryRatingLevelOption.id as summaryRatingLevelOption.text for summaryRatingLevelOption in summaryRatingLevelOptions">
+								<option value="">Select...</option>
+							</select>
+							<p class="text-danger"
+								ng-show="createRcsaCycleForm.sumRtglvl.$touched && createRcsaCycleForm.sumRtglvl.$error.required">Summary
+								Rating Level is required</p>
+						</div>
+					</div>
+			</div>
+			<div class="indicativeele">
+				<div class="panel-footer">
+					<p class="panelFontSize">Indicative Data Elements</p>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col-md-6 fieldHeight">
+						<div class="form-group">
+							<label for="erhDate" class="col-md-5 {{requiredstr}}">ERH
+								Dates:</label>
+							<div class="col-md-7">
+								<input type="text" class="form-control" id="erhDate"
+									ng-model="rcsaCycleDTO.erhDate" name="erhDate" disabled /> <input
+									type="text" class="form-control" id="erhDateKey"
+									ng-model="rcsaCycleDTO.erhDateKey" name="erhDateKey"
+									ng-show="false" />
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6 fieldHeight">
+						<div class="form-group">
+							<label for="oplossValDate" class="col-md-5 {{requiredstr}}">
+								OpLoss Validation Dates:</label>
+							<div class="col-md-7"
+								ng-if="rcsaCycleDTO.cycStatLkupCode === 'RA_CYC_SETUP'">
+								<select class="form-control" name="oplossValDate"
+									id="oplossValDate"
+									ng-model="rcsaCycleDTO.opLossValidationDateKey"
+									ng-change="OplossFromAndToDate()"
+									ng-options="OplossValidationDateOption.id as OplossValidationDateOption.text for OplossValidationDateOption in OplossValidationDateOptions">
+									<option value="">Select...</option>
+								</select>
+								<p class="text-danger"
+									ng-show="createRcsaCycleForm.oplossValDate.$touched && createRcsaCycleForm.oplossValDate.$error.required">OPLoss
+									Validation From Date is Required</p>
+							</div>
+							<div class="col-md-7"
+								ng-if="rcsaCycleDTO.cycStatLkupCode !== 'RA_CYC_SETUP'">
+								<select class="form-control" name="oplossValDate"
+									id="oplossValDate"
+									ng-model="rcsaCycleDTO.opLossValidationDateKey"
+									ng-change="OplossFromAndToDate()"
+									ng-options="OplossValidationDateOption.id as OplossValidationDateOption.text for OplossValidationDateOption in OplossValidationDateOptions"
+									disabled>
+									<option value="">Select...</option>
+								</select>
+
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6 fieldHeight">
+						<div class="form-group">
+							<label for="issueFromDate" class="col-md-5 {{requiredstr}}">Issue
+								Date Range:</label>
+
+							<div class="col-md-7">
+								<div class="row">
+									<div class="col-md-5 changeWdhoncycle">
+										<input type="text" class="form-control" name="issueFromDate"
+											id="issueFromDate" kendo-date-picker
+											ng-model="rcsaCycleDTO.issueFromDate"
+											onkeydown="return false;" k-format="'MM/dd/yyyy'"
+											k-max="'{{today}}'"
+											ng-disabled="rcsaCycleDTO.cycStatLkupCode !== 'RA_CYC_SETUP'" ng-class="{disablebg:rcsaCycleDTO.cycStatLkupCode !== 'RA_CYC_SETUP'}" />
+									</div>
+								
+									<div class="col-md-1">
+										<label class="control-label padd15"> To:</label>
+									</div>
+									<div class="col-md-5 changeWdhoncycle">
+
+										<input type="text" class="form-control ToDateWidth disablebg" name="issueToDate"
+											id="issueToDate" ng-model="rcsaCycleDTO.issueToDate" disabled />
+
+									</div>
+									<div class="col-md-12">
+									  <p class="text-danger"
+										ng-show="createRcsaCycleForm.issueFromDate.$touched && createRcsaCycleForm.issueFromDate.$error.required">Issue
+										From Date is Required</p>
+							        </div>
+
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6 fieldHeight">
+						<div class="form-group">
+							<label for="opLossFromDate" class="col-md-5 {{requiredstr}}">OpLoss
+								Date Range:</label>
+
+							<div class="col-md-7">
+								<div class="row">
+									<div class="col-md-5 changeWdhoncycle">
+										<input type="text" class="form-control" name="opLossFromDate"
+											id="opLossFromDate" kendo-date-picker
+											ng-model="rcsaCycleDTO.opLossFromDate"
+											onkeydown="return false;" k-format="'MM/dd/yyyy'"
+											ng-disabled="rcsaCycleDTO.cycStatLkupCode !== 'RA_CYC_SETUP' || !enableOplossFromDate"
+											ng-change="validateOplossDate('opLossFromDate','opLossToDate')" ng-class="{disablebg: rcsaCycleDTO.cycStatLkupCode !== 'RA_CYC_SETUP' || !enableOplossFromDate}" />
+									</div>
+									<div class="col-md-1">
+										<label class="control-label padd15"> To:</label>
+									</div>
+									<div class="col-md-5 changeWdhoncycle">
+										<input type="text" class="form-control" name="opLossToDate"
+											id="opLossToDate" ng-model="rcsaCycleDTO.opLossToDate"
+											disabled />
+									</div>
+								</div>
+								<p class="text-danger"
+										ng-show="createRcsaCycleForm.opLossFromDate.$touched && createRcsaCycleForm.opLossFromDate.$error.required">OpLoss
+										From Date is Required</p>
+									<p class="text-danger"
+										ng-show="createRcsaCycleForm.opLossFromDate.$touched && createRcsaCycleForm.opLossFromDate.$error.dateRange">OpLoss
+										Validation From Date should be less than To Date</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6 fieldHeight">
+						<div class="form-group">
+							<label for="kriFromDate" class="col-md-5 {{requiredstr}}">KRI
+								Date Range:</label>
+							<div class="col-md-7">
+								<div class="row">
+									<div class="col-md-5 changeWdhoncycle">
+										<input type="text" class="form-control" name="kriFromDate"
+											id="kriFromDate" kendo-date-picker
+											ng-model="rcsaCycleDTO.kriFromDate"
+											ng-disabled="rcsaCycleDTO.cycStatLkupCode !== 'RA_CYC_SETUP'"
+											onkeydown="return false;" k-format="'MM/dd/yyyy'"
+											k-max="'{{today}}'" ng-class="{disablebg:rcsaCycleDTO.cycStatLkupCode !== 'RA_CYC_SETUP'}" />
+									</div>
+									
+									<div class="col-md-1">
+										<label class="control-label padd15"> To:</label>
+									</div>
+									<div class="col-md-5 changeWdhoncycle">
+										<input type="text" class="form-control ToDateWidth disablebg" name="kriToDate"
+											id="kriToDate" ng-model="rcsaCycleDTO.kriToDate" disabled />
+									</div>
+									<div class="col-md-12">
+									<p class="text-danger"
+										ng-show="createRcsaCycleForm.kriFromDate.$touched && createRcsaCycleForm.kriFromDate.$error.required">KRI
+										From Date is Required</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<br>
+			<div class="row">
+				<div class="col-md-12 fieldHeight">
+					<label for="rationaleText" class="required">Rationale:</label>
+					<textarea rows="6" class="form-control" ng-trim="false"
+						name="rationaleText" id="rationaleText"
+						ng-model="rcsaCycleDTO.cycDesc" placeholder="Rationale text"
+						maxlength="4000" required
+						ng-disabled="rcsaCycleDTO.cycStatLkupCode=='RA_CANCEL' || rcsaCycleDTO.cycStatLkupCode=='RA_FINAL'"
+						data-tooltip-html-unsafe="<div>{{4000 - rcsaCycleDTO.cycDesc.length}} characters left</div>"
+						tooltip-trigger="{{{true: 'focus', false: 'never'}[rcsaCycleDTO.cycDesc.length >= 0 || rcsaCycleDTO.cycDesc.length == null ]}}"
+						tooltip-placement="top" tooltip-class="bluefill"></textarea>
+					<p class="text-danger"
+						ng-show="createRcsaCycleForm.rationaleText.$touched && createRcsaCycleForm.rationaleText.$error.required">Rationale
+						is required</p>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<div class="panel panel-default" ng-show="editMode">
+	<div class="panel-heading panelFontSize">Assessments</div>
+	<div class="panel-body">
+		<div class="row">
+			<div class="col-md-12">
+				<button require-control-point="ASSESSMENT_ADD"
+					class="btn btn-default pull-right mousedwncall"
+					ng-disabled="shoeHideAddAssessment || rcsaCycleDTO.cycStatLkupCode=='RA_CANCEL'  || rcsaCycleDTO.cycStatLkupCode=='RA_FINAL'"
+					type="button" ng-click="createAssess()">Add Assessment</button>
+			</div>
+		</div>
+		<div kendo-tab-strip k-content-urls="[ null, null]">
+			<ul>
+				<li class="k-state-active"><a href=""
+					ng-click="showHideAddAssessment('Include')">Include in Cycle</a></li>
+				<li><a href="" ng-click="showHideAddAssessment('Exclude')">Exclude
+						from Cycle</a></li>
+			</ul>
+			<div>
+				<div class="row gridMargin">
+					<div kendo-grid="includeAssGrid" k-options="includeAssOptions"></div>
+				</div>
+			</div>
+			<div>
+				<div class="row gridMargin">
+					<div kendo-grid="excludeAssGrid" k-options="excludeAssOptions"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="panel panel-default" ng-show="editMode">
+	<div class="panel-heading panelFontSize">Audit</div>
+	<div class="panel-body">
+		<div class="audit-block formFooter">
+			<div class="col-md-12">
+				<div class="form-group col-md-6 fieldHeight">
+					<p class="audit-block col-md-7">Created By:</p>
+					<div>{{rcsaCycleDTO.createWorkerTxt }}</div>
+				</div>
+				<div class="form-group col-md-6 fieldHeight">
+					<p class="audit-block col-md-6">Original Source System:</p>
+					<div>{{rcsaCycleDTO.sourceFeedCode}}</div>
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="form-group col-md-6 fieldHeight">
+					<p class="audit-block col-md-7 ">Created Date:</p>
+					<div>{{rcsaCycleDTO.createdTimestamp}}</div>
+				</div>
+				<div class="form-group col-md-6 fieldHeight">
+					<p class="audit-block col-md-6 ">RAP Cycle ID:</p>
+					<div>{{rcsaCycleDTO.rskAsesCycleKey }}</div>
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="form-group col-md-6 fieldHeight">
+					<p class="audit-block col-md-7 ">Modified By:</p>
+					<div>{{rcsaCycleDTO.modifiedUserText}}</div>
+				</div>
+				<div class="form-group col-md-6 fieldHeight">
+					<p class="audit-block col-md-6">Modified Date:</p>
+					<div>{{rcsaCycleDTO.modifiedTimestamp}}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="panel-footer">
+	<div class="row">
+		<div class="col-md-6">
+			<button class="btn btn-default" type="button"
+				ng-click="handleCancel()">Cancel</button>
+
+		</div>
+		<div class="col-md-6 text-right">
+		       <span>
+			    <button class="btn btn-primary" ng-hide="editMode" type="button"
+				ng-disabled="createRcsaCycleForm.$invalid || rcsaCycleDTO.cycStatLkupCode=='RA_CANCEL'"
+				ng-class="{disableSaveCls:createRcsaCycleForm.$invalid}"
+				ng-click="submit()">Save</button>
+				</span>
+             <span>
+			   <button class="btn btn-primary" type="button" ng-show="editMode"
+				ng-disabled="createRcsaCycleForm.$invalid || rcsaCycleDTO.cycStatLkupCode=='RA_CANCEL' || rcsaCycleDTO.cycStatLkupCode=='RA_FINAL'"
+				ng-class="{disableSaveCls:createRcsaCycleForm.$invalid || createRcsaCycleForm.$invalid || rcsaCycleDTO.cycStatLkupCode=='RA_CANCEL'}"
+				ng-click="submit()" require-control-point="RCSA_CYCLE_EDIT">Update</button>
+		     </span>
+				
+			<span><button class="btn btn-primary" type="button" ng-show="editMode"
+				ng-disabled="rcsaCycleDTO.cycStatLkupCode=='RA_CANCEL' || rcsaCycleDTO.cycStatLkupCode=='RA_FINAL' || disableStartAssbtn==true"
+				ng-click="startAssessmentHandler()"
+				require-control-point="RCSA_CYCLE_EDIT"
+				ng-class="{disableSaveCls:disableStartAssbtn || rcsaCycleDTO.cycStatLkupCode=='RA_CANCEL' || rcsaCycleDTO.cycStatLkupCode=='RA_FINAL' }">Start
+				Assessment</button></span>
+
+			<span><button class="btn btn-primary" type="button" ng-show="editMode"
+				ng-disabled="rcsaCycleDTO.cycStatLkupCode=='RA_CANCEL' || rcsaCycleDTO.cycStatLkupCode=='RA_FINAL'"
+				ng-click="closeCycle()" require-control-point="RCSA_CYCLE_EDIT"
+				ng-class="{disableSaveCls:rcsaCycleDTO.cycStatLkupCode=='RA_CANCEL'}">Close
+				Cycle</button></span>
+
+			<span><button class="btn btn-danger" type="button" ng-show="editMode"
+				ng-disabled="rcsaCycleDTO.cycStatLkupCode=='RA_CANCEL' || rcsaCycleDTO.cycStatLkupCode=='RA_FINAL'"
+				ng-click="cancelCycle()" require-control-point="RCSA_CYCLE_DELETE"
+				ng-class="{disableSaveCls:rcsaCycleDTO.cycStatLkupCode=='RA_CANCEL'}">Cancel
+				Cycle</button></span>
+		</div>
+	</div>
+</div>
+
+<div kendo-window="confirmationWin" options="confirmationWinOptions" k-resizable="false"
+	class="confirmationWin"></div>

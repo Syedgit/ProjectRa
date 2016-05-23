@@ -1,0 +1,248 @@
+<form name="processRatingForm" novalidate ng-cloak
+	ng-controller="EditProcessRatingCtrl"
+	class="border-box-sizing grids-fonts">
+	<div ng-show="errMsg" class="status">
+		<span class='userErrorInfo'>{{emptyErrorMessage}}</span>
+	</div>
+	<div class="row valErr-processRtg">
+		<div class="col-md-12">
+			<div class="status">{{PrcsratingValidationMsg}}</div>
+		</div>
+	</div>    
+<div class="modalForm">	
+	<div class="modalBorder">
+		<div class="row">
+			<div class="form-group col-md-6" ng-disabled="true">
+				<div>
+					<label class="control-label required" for="processInherentRisk">
+						Inherent Risk Rating Computed</label>
+				</div>
+				<div>
+					<select class="form-control"
+						ng-model-options="{ updateOn: 'blur' }"
+						ng-model="processRating.inherentRiskRatingKey"
+						readOnly="compReadOnly" id="processInherentRisk"
+						ng-options="inherentRiskRatingOption.id as inherentRiskRatingOption.text for inherentRiskRatingOption in inherentRiskRatingOptions" ng-disabled="true">
+						<option value="">Select...</option>
+						</select>
+				</div>
+			</div>
+			<div class="form-group col-md-6" ng-disabled="true">
+				<div>
+					<label class="control-label required"
+						for="finalOutcomeInherentRiskRatingKey"> Inherent Risk
+						Rating FLU/CF Final</label>
+				</div>
+				<div>
+					<select class="form-control" 
+						ng-model-options="{ updateOn: 'blur' }"
+						ng-model="processRating.finalOutcomeInherentRiskRatingKey"
+						readOnly="compReadOnly" id="finalOutcomeInherentRiskRatingKey"
+						ng-options="inherentRiskRatingOption.id as inherentRiskRatingOption.text for inherentRiskRatingOption in inherentRiskRatingOptions" ng-disabled="true">
+						<option value="">Select...</option>
+						</select>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-md-6" ng-hide="true">
+				<div>
+					<label class="control-label" for="controlEffect">Overall
+						Control Effectiveness Computed</label>
+				</div>
+				<select class="form-control" 
+					ng-model-options="{updateOn: 'blur'}"
+					ng-model="processRating.controlEffectivenessRatingComputeKey"
+					id="controlEffect"
+					ng-options="ctrlEffOption.id as ctrlEffOption.text for ctrlEffOption in ctrlEffOptions">
+					<option value="">Select...</option>
+					</select>
+			</div>
+			<div class="form-group col-md-6">
+				<div>
+					<label class="control-label required" for="controlEffBusiness">Overall
+						Control Effectiveness Final</label>
+				</div>
+				<div>
+					<select class="form-control" 
+						ng-disabled="!processRating.controlEffectivenessRatingComputeKey ||!processRating.edit"
+						ng-model="processRating.controlEffectivenessRatingOverrideKey"
+						ng-change="overrideBusinessDec()" id="controlEffBusiness" required
+						ng-options="ctrlEffOption.id as ctrlEffOption.text for ctrlEffOption in ctrlEffOptions">
+					    <option value="">Select...</option> 
+						</select>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-md-8">
+				<label class="control-label required" for="OverallBusComment">
+					Overall Control Effectiveness Justification/Remediation</label>
+			</div>
+			<div class="col-md-10">
+				<textarea rows="2" class="form-control" maxlength="4000"
+					required
+					ng-disabled="!processRating.controlEffectivenessRatingOverrideKey||!processRating.edit"
+					id="OverallBusComment" name="OverallBusComment"
+					placeholder="Overall Control Effectiveness Justification/Remediation"
+					ng-model="processRating.overallControlEffectivenessOverrideText" 
+					data-tooltip-html-unsafe="<div>{{4000 - processRating.overallControlEffectivenessOverrideText.length}} characters left</div>"
+					tooltip-trigger="{{{true: 'focus', false: 'never'}[processRating.overallControlEffectivenessOverrideText.length >= 0 || processRating.overallControlEffectivenessOverrideText.length == null ]}}"
+					tooltip-placement="top" tooltip-class = "bluefill"></textarea>
+				<p class="text-danger"
+					ng-show="processRatingForm.OverallBusComment.$touched && processRatingForm.OverallBusComment.$error.required">Overall Control Effectiveness Justification/Remediation is required</p>
+			</div>
+		</div>
+		<br>
+		<div ng-show="showEditdisForm">
+			<div class="row">
+				<div class="form-group col-md-6" ng-disabled="disableEffComp">
+					<div>
+						<label class="control-label required" for="residualRating">Residual
+							Risk Computed</label>
+					</div>
+					<div>
+						<select class="form-control" 
+							ng-model="processRating.residualRiskRatingComputeKey"
+							readOnly="compReadOnly" id="residualRating"
+							ng-model-options="{updateOn: 'blur'}" ng-disabled="disableEffComp"
+							ng-options="riskComputeOption.id as riskComputeOption.text for riskComputeOption in riskComputeOptions">
+							<option value="">Select...</option>
+							</select>
+					</div>
+				</div>
+				<div class="form-group col-md-6">
+					<div>
+						<label class="control-label required" for="residualRiskBus">Residual
+							Risk Business</label>
+					</div>
+					<div>
+						<select class="form-control"  required name="residualRiskBus"
+							data-required-msg="Residual risk business is required"
+							ng-model="processRating.residualRiskRatingOverrideKey"
+							ng-disabled="!processRating.edit"
+							ng-change="residualRiskChange()" id="residualRiskBus"
+							ng-options="riskBusinessOption.id as riskBusinessOption.text for riskBusinessOption in riskBusinessOptions">
+							<option value="">Select...</option>
+							</select>
+						<p class="text-danger"
+							ng-show="processRatingForm.residualRiskBus.$touched && processRatingForm.residualRiskBus.$error.required">Residual
+							Risk Business is required</p>
+					</div>
+				</div>
+			</div>
+			<div class="row"
+				ng-if="processRating.residualRiskRatingComputeKey != processRating.residualRiskRatingOverrideKey && processRating.residualRiskRatingOverrideKey">
+				<div class="form-group col-md-6">
+					<label class="control-label required" for="resiRiskBusComment">
+						Residual Risk Business Justification</label>
+				</div>
+				<div class="col-md-10">
+					<textarea rows="2" class="form-control" type="text" maxlength="4000"
+						ng-required="processRating.residualRiskRatingComputeKey != processRating.residualRiskRatingOverrideKey"
+						ng-disabled="!processRating.edit"
+					  id="resiRiskBusComment"
+						name="resiRiskBusComment"
+						placeholder="Residual Risk Business Justification"
+						data-required-msg="Residual Risk Business comment is required"
+						ng-model="processRating.residualRatingText" 
+						data-tooltip-html-unsafe="<div>{{4000 - processRating.residualRatingText.length}} characters left</div>"
+						tooltip-trigger="{{{true: 'focus', false: 'never'}[processRating.residualRatingText.length >= 0 || processRating.residualRatingText.length == null ]}}"
+						tooltip-placement="top" tooltip-class = "bluefill"></textarea>
+					<p class="text-danger"
+						ng-show="processRating.controlEffectivenessRatingComputeKey !=processRating.controlEffectivenessRatingOverrideKey &&
+				processRatingForm.resiRiskBusComment.$touched && processRatingForm.resiRiskBusComment.$error.required">Residual Risk Business Justification is required</p>
+
+				</div>
+			</div>
+			<br>
+			<div class="row">
+				<div class="form-group col-md-6">
+					<div>
+						<label class="control-label required" for="riskDirection">Risk
+							Direction</label>
+					</div>
+					<div>
+						<select class="form-control" required
+							data-required-msg="Risk Direction is required"
+							ng-disabled="!processRating.edit"
+							ng-model="processRating.residualRiskDirKey" name="riskDirection"
+							ng-change="riskDirectionChange()" id="riskDirection"
+							ng-options="riskDirOption.id as riskDirOption.text for riskDirOption in riskDirOptions">
+							<option value="">Select...</option>
+							</select>
+						<p class="text-danger"
+							ng-show="processRatingForm.riskDirection.$touched && processRatingForm.riskDirection.$error.required">Risk
+							Direction is required</p>
+					</div>
+				</div>
+				<div class="form-group col-md-6" ng-if="showrRiskAccpt">
+					<div>
+						<label class="control-label required">Risk Acceptance</label>
+					</div>
+					<div>
+						<input type="radio" name="riskAcceptanceDec" required
+							ng-model="processRating.riskAcceptanceFlag" value="Y"
+							ng-disabled="!processRating.edit"
+							ng-change="showRationalCmmt()">&nbsp;Yes&nbsp;&nbsp;&nbsp;
+							
+						<input type="radio" name="riskAcceptanceDec" required
+							ng-model="processRating.riskAcceptanceFlag" value="N"
+							ng-disabled="!processRating.edit"
+							ng-change="showRationalCmmt()">&nbsp;No
+						<p
+							ng-show="!(processRating.riskAcceptanceFlag === 'Y'|| processRating.riskAcceptanceFlag === 'N' )"
+							class="text-danger">Risk acceptance is required</p>
+					</div>
+
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-md-6" ng-if="rationaleComments">
+					<div>
+						<label class="control-label required" for="riskAcceptanceComment">Rationale</label>  
+					</div>
+					<div>
+						<textarea class="form-control"
+							ng-model="processRating.riskAcceptanceComment"
+							name="riskAcceptanceComment" id="riskAcceptanceComment"
+							ng-disabled="!processRating.edit"
+							placeholder="Rationale"
+							ng-required="processRating.riskAcceptanceFlag=='Y'" maxlength="4000"
+							data-tooltip-html-unsafe="<div>{{4000 - processRating.riskAcceptanceComment.length}} characters left</div>"
+							tooltip-trigger="{{{true: 'focus', false: 'never'}[processRating.riskAcceptanceComment.length >= 0 || processRating.riskAcceptanceComment.length == null ]}}"
+							tooltip-placement="top" tooltip-class = "bluefill"></textarea>
+						<p class="text-danger"
+							ng-show="processRating.riskAcceptanceFlag=='Y' &&
+				processRatingForm.riskAcceptanceComment.$touched && processRatingForm.riskAcceptanceComment.$error.required">Rationale
+							is required</p>
+					</div>
+				</div>
+				<div class="form-group col-md-6">
+					<div>
+						<label class="control-label">Missing Controls</label>
+					</div>
+					<div>
+						<input type="radio" name="missFlag"
+						ng-disabled="!processRating.edit"
+							ng-model="processRating.mssControlFlag" value="Y">&nbsp;Yes&nbsp;&nbsp;&nbsp;
+						<input type="radio" name="missFlag"
+						ng-disabled="!processRating.edit"
+							ng-model="processRating.mssControlFlag" value="N">&nbsp;No
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+	<div class="modal-footer footerMargin">
+		<button class="btn btn-default pull-left mousedwncall" ng-click="closeModal()">Cancel</button>
+		<span><button require-control-point="PRT_EDIT" context-val-id="processDTO.erhUtilKeyList"
+			ng-disabled="processRatingForm.$invalid || !processRating.edit"
+			ng-class="{disableSaveCls:processRatingForm.$invalid || !processRating.edit}" type="submit"
+			class="btn btn-primary mousedwncall" ng-click="saveProcessRating()"
+			ng-show="showEditdisForm">Update</button></span>
+	</div>
+</form>
+<div kendo-window="confirmationWin" options="confirmationWinOptions" k-resizable="false"
+	class="confirmationWin"></div>

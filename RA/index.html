@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html ng-app="riskAssessmentApp">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+        <meta name="viewport" content="width=device-width">
+
+        <title>Risk Assessment</title>
+
+        <link rel="icon" type="image/x-icon" href="images/favicon.png">
+
+        <!-- bootstrap.css contains normalize, so it needs to go first  -->
+        <!-- build:css(.tmp) styles/main.css -->
+        
+       
+        <link rel="stylesheet" href="bower_components/orcit-theme/dist/styles/bootstrap.css">
+        <link rel="stylesheet" href="bower_components/orcit-theme/dist/styles/kendo.bootstrap.css">
+        <link rel="stylesheet" href="bower_components/orcit-theme/dist/styles/kendo.common-bootstrap.css">
+        <link rel="stylesheet" href="bower_components/orcit-theme/dist/styles/orcit.css">
+        <link rel="stylesheet" href="bower_components/bac-multiselect/bacMultiselect.css">
+        <link rel="stylesheet" href="bower_components/kendo-multiselect-treeview/widget.css">
+        <link rel="stylesheet" href="bower_components/orcit-icon/orcitIcon.css">
+        <link rel="stylesheet" href="bower_components/orcit-multiselect-treeview/src/orcitMultiselectTreeview.css">
+        <link rel="stylesheet" href="styles/site.css">
+        <link rel="stylesheet" href="styles/bootstrap-override.css">
+        <link rel="stylesheet" href="styles/kendo-override.css">
+        <link rel="stylesheet" href="styleNew/multiselect-treeview.css">
+        <link rel="stylesheet" href="styleNew/main.css">
+        <link rel="stylesheet" href="styleNew/progressStepbar.css">
+        <link rel="stylesheet" href="styles/style.css">
+        <link rel="stylesheet" href="bower_components/orcit-loader/src/orcitLoader.css">
+        <!-- endbuild -->
+    </head>
+    <body>
+    	<span initial-value></span>
+        <div ui-view></div>
+
+        <!-- build:js scripts/scripts.js -->
+        <script src="bower_components/orcit-bower/src/jquery/dist/jquery.js"></script>
+        <script src="bower_components/orcit-bower/src/angular/angular.js"></script>
+        <script src="bower_components/orcit-bower/src/angular-cookies/angular-cookies.js"></script>
+        <script src="bower_components/orcit-bower/src/angular-off-click/offClick.js"></script>
+        <script src="bower_components/orcit-bower/src/angular-resource/angular-resource.js"></script>
+        <script src="bower_components/orcit-bower/src/spin.js/spin.js"></script>
+        <script src="bower_components/orcit-bower/src/angular-spinner/angular-spinner.js"></script>
+        <script src="bower_components/orcit-loader/src/orcitLoader.js"></script>
+        <script src="bower_components/angular-ui-bootstrap/ui-bootstrap-tpls-0.11.2.js"></script>
+        <script src="bower_components/orcit-bower/src/angular-ui-router/angular-ui-router.js"></script>
+        <script src="bower_components/orcit-sso-handler/orcitSsoHandler.js"></script>
+				<script src="bower_components/orcit-bower/src/kendo/js/kendo.all.min.js"></script>
+        <script src="bower_components/orcit-bower/src/kendo/js/jszip.min.js"></script>
+        <script src="bower_components/bac-multiselect/bacMultiselect.js"></script>
+        <script src="bower_components/kendo-multiselect-treeview/kendo-multiselect-treeview.js"></script>
+        <script src="bower_components/orcit-multiselect-treeview/src/orcitMultiselectTreeview.js"></script>
+				<script src="bower_components/orcit-icon/angular-material-icons.js"></script>
+				<script src="bower_components/orcit-icon/orcitIcon.js"></script>
+        <script src="scripts/global/shim.js"></script>
+        <script src="scripts/utils.js"></script>
+        <script src="scripts/app.js"></script>
+        <script src="scripts/interceptors.js"></script>
+        <script src="scripts/constants.js"></script>
+        <script src="scripts/controllers.js"></script>
+        <script src="scripts/services.js"></script>
+        <script src="scripts/confirmationWinConfig.js"></script>
+        <script src="scripts/entitlementConfig.js"></script>
+        <script src="scripts/global/alert.js"></script>
+        <script src="scripts/global/breadCrumbdirective.js"></script>
+        <script src="scripts/global/entitlementDirectives.js"></script>
+
+        <script src="scripts/global/MainCtrl.js"></script>
+        <script src="scripts/global/scrollTotop.js"></script>
+        <script src="scripts/authenticate/LoginCtrl.js"></script>
+        <script src="scripts/authenticate/authentication-service.js"></script>
+        <script src="scripts/authenticate/authentication-directive.js"></script>
+        <script src="scripts/cacheDropdownDataSource.js"></script>
+
+        <script src="scripts/riskassessmentHomePage/HomeCtrl.js"></script>
+        <script src="scripts/riskassessmentHomePage/riskHomePageService.js"></script>
+        <script src="scripts/riskassessmentHomePage/processDataPendAct.js"></script>
+        <script src="scripts/riskassessmentHomePage/ViewPrcsDataModal.js"></script>
+        <script src="scripts/riskassessmentHomePage/attributeApprovalsConfig.js"></script>
+
+
+        <script src="scripts/process/ProcessCtrl.js"></script>
+        <script src="scripts/process/processService.js"></script>
+        <script src="scripts/process/processTreeConfig.js"></script>
+        <script src="scripts/process/EditProcessRatingCtrl.js"></script>
+        <script src="scripts/process/processFactory.js"></script>
+
+        <script src="scripts/risk/RiskCtrl.js"></script>
+        <script src="scripts/risk/riskService.js"></script>
+        <script src="scripts/risk/riskFactory.js"></script>
+
+        <script src="scripts/control/CreateControlCtrl.js"></script>
+        <script src="scripts/control/createControlService.js"></script>
+        <script src="scripts/control/editControlInProcessModel.js"></script>
+        <script src="scripts/control/ControlFactory.js"></script>
+
+        <script src="scripts/viewAll/ViewSearchInvCtrl.js"></script>
+        <script src="scripts/viewAll/viewSearchInvService.js"></script>
+        <script src="scripts/viewAll/model.js"></script>
+        <script src="scripts/viewAll/datasetFactory.js"></script>
+        
+        <script src="scripts/rating/RatingCtrl.js"></script>
+        <script src="scripts/rating/ratingFactory.js"></script>
+        <script src="scripts/rating/ratingQstnGridConfig.js"></script>
+        <script src="scripts/rating/ihtRskRatingGridConfig.js"></script>
+        <script src="scripts/rating/processRatingGridConfig.js"></script>
+
+        <script src="scripts/alignedrisks/alignedRiskService.js"></script>
+        <script src="scripts/alignedrisks/alignedRisksHeaderPallette.js"></script>
+        <script src="scripts/alignedrisks/existingRiskGridDataService.js"></script>
+        <script src="scripts/alignedrisks/alignedCtrlsHeaderPallette.js"></script>
+
+        <script src="scripts/alignctlprocess/alignControlToProcessService.js"></script>
+
+        <script src="scripts/rcsa/EditRcsaCycleCtrl.js"></script>
+        <script src="scripts/rcsa/rcsaFactory.js"></script>
+        <script src="scripts/rcsa/rcsaAssessConfig.js"></script>
+
+        <script src="scripts/rcsa/rcsaAssessmentCtrl.js"></script>
+        <script src="scripts/rcsa/rcsaAssessmentFactory.js"></script>
+        <script src="scripts/rcsa/rcsaAssessmentService.js"></script>
+        <script src="scripts/rcsa/editQuestionnaireCtrl.js"></script>
+        <script src="scripts/rcsa/editRcsaService.js"></script>
+        <script src="scripts/viewSearchAssessments/viewAssessmentCtrl.js"></script>
+        <script src="scripts/viewSearchAssessments/viewSearchAssessmentConfig.js"></script>
+
+        <script src="scripts/viewSearchRcsa/viewSearchRcsaCtrl.js"></script>
+        <script src="scripts/viewSearchRcsa/viewSearchRcsaFactory.js"></script>
+        <script src="scripts/viewSearchRcsa/viewSearchRcsaConfig.js"></script>
+
+        <script src="scripts/assessment/EditAssessmentCtrl.js"></script>
+        <script src="scripts/assessment/EditTopRiskCtrl.js"></script>
+        <script src="scripts/assessment/topRiskValues.js"></script>
+        <script src="scripts/assessment/prcsLvlTopRiskFactory.js"></script>
+
+
+        <script src="scripts/attestor/attestorConfig.js"></script>
+        <script src="scripts/attestor/attestorCtrl.js"></script>
+        <script src="scripts/attestor/attestDocCtrl.js"></script>
+        <script src="scripts/attestor/attachedDocCtrl.js"></script>
+        <script src="scripts/attestor/attestorFactory.js"></script>
+
+        <script src="scripts/documentation/assessmentDocConfig.js"></script>
+        <script src="scripts/documentation/assessmentDocumentCtrl.js"></script>
+
+        <script src="scripts/editRcsa/editRcsaSummaryRatingCtrl.js"></script>
+        <script src="scripts/editRcsa/editRcsaAssessmentService.js"></script>
+ 		<script src="scripts/editRcsa/summaryRatingGrids.js"></script>
+
+
+        <script src="scripts/challenges/challengesGridConfig.js"></script>
+        <script src="scripts/challenges/challengesCtrl.js"></script>
+        <script src="scripts/checklist/checklistConfig.js"></script>
+
+        <script src="scripts/challenges/ProcessChallengesGridConfig.js"></script>
+        <script src="scripts/challenges/processChallengesCtrl.js"></script>
+
+        <script src="scripts/viewEndToEnd/viewEndToEndCtrl.js"></script>
+        <script src="scripts/viewEndToEnd/viewEndToEndGridConfig.js"></script>
+        <script src="scripts/viewEndToEnd/viewEndToEndService.js"></script>
+ 		<script src="scripts/viewEndToEnd/viewEndToEndErhCtrl.js"></script>
+ 		 <script src="scripts/viewEndToEnd/viewEndToEndErhGridConfig.js"></script>
+        
+         <script src="scripts/upload/prcFileUploadCtrl.js"></script>
+         <script src="scripts/upload/prcFileUploadGridConfig.js"></script>
+         <script src="scripts/upload/prcFileUploadService.js"></script>
+
+ 		 <script src="scripts/global/EllipsisDirective.js"></script>
+ 		 <script src="scripts/global/SeparatorDirective.js"></script>
+
+ 		<script src="scripts/admin/adminService.js"></script>
+        <script src="scripts/admin/adminFactory.js"></script>
+        <script src="scripts/admin/adminGridConfig.js"></script>
+        <script src="scripts/admin/NotificationCtrl.js"></script>
+        
+        <script src="scripts/admin/questionnaireMaintenanceCtrl.js"></script>
+ 		 
+        <!-- endbuild -->
+    </body>
+</html>

@@ -1,0 +1,625 @@
+<div class="ng-hide" ng-show="true">
+		<form name="editAssessmentInfoForm" novalidate
+			class="form-horizontal marginLeft10">
+
+	<accordion close-others="false"> <accordion-group
+		ng-init="assessmentMainPanel.isOpen = true"
+		is-open="assessmentMainPanel.isOpen"> <accordion-heading>
+	<span class="panelFontSize"> <strong> {{panelTitle}}
+			Details: {{riskAssessmentDTO.assessmentName}} </strong>
+	</span> <i class="pull-right glyphicon"
+		ng-class="{'glyph-chevron-down': assessmentMainPanel.isOpen, 'glyph-chevron-right': !assessmentMainPanel.isOpen}"></i>
+	</accordion-heading>
+
+	<div class="panel-body formHeight">
+		<div>
+			<p class="status {{validationClass}}">{{validationMessage}}</p>
+		</div>
+			<div class="row">
+				<div class="col-md-12 fieldHeight" ng-if="statusInfo">
+					<span class="{{statusClass}}" ><strong>{{statusInfo}}</strong>
+					
+					<a href="" class="openValidations" ng-click="openAlertMessageList()" >here</a></span>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="cycleType" class="col-md-5">Cycle Type:</label>
+						<div class="col-md-7">
+							<input type="text" class="form-control" id="cycleType"
+								name="cycleType" maxlength="256"
+								ng-model="riskAssessmentDTO.cycleTypeText" disabled>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6" require-control-point="DUE_DATE_VIEW"
+					context-val-id="utilList">
+					<div class="form-group">
+						<label for="dueDate" class="col-md-5 {{requiredFlag}}">Assessment
+							Due Date:</label>
+						<div class="col-md-7"
+							ng-if="!isEditAssessmentGrid || riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_DELETED' || riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_FINAL'">
+							<input kendo-date-picker ng-model="riskAssessmentDTO.dueDate"
+								onkeydown="return false;" id="dueDate" name="dueDate"
+								ng-change="validateDueDate('dueDate')" disabled
+								k-format="'MM/dd/yyyy'" ng-model-options="{updateOn: 'blur'}" ng-class="{disablebg:!isEditAssessmentGrid || riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_DELETED' || riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_FINAL'}"/>
+						</div>
+						<div class="col-md-7"
+							ng-if="isEditAssessmentGrid && (riskAssessmentDTO.assessmentStatusLookUpCode!='RA_ASES_FINAL' && riskAssessmentDTO.assessmentStatusLookUpCode != 'RA_ASES_DELETED')"
+							disable-control-point="DUE_DATE_EDIT" context-val-id="utilList">
+							<input kendo-date-picker ng-model="riskAssessmentDTO.dueDate"
+								onkeydown="return false;" id="dueDate" name="dueDate"
+								ng-change="validateDueDate('dueDate')" k-format="'MM/dd/yyyy'"
+								ng-model-options="{updateOn: 'blur'}" required
+								ng-disabled="DUE_DATE_EDIT" ng-class="{disablebg: DUE_DATE_EDIT}">
+							<p class="text-danger"
+								ng-show="editAssessmentInfoForm.dueDate.$touched && editAssessmentInfoForm.dueDate.$error.required">Assessment
+								due date is required</p>
+							<p class="text-danger"
+								ng-show="editAssessmentInfoForm.dueDate.$error.dateRange">
+								Assessment due date can not be less than cycle due date</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="cycleName" class="col-md-5">Cycle Name:</label>
+						<div class="col-md-7">
+							<input type="text" class="form-control" id="cycleName"
+								name="cycleName" maxlength="256"
+								ng-model="riskAssessmentDTO.cycleName" disabled />
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="assessmentStatus" class="col-md-5">Assessment
+							Status:</label>
+						<div class="col-md-7">
+							<input type="text" class="form-control" id="assessmentStatus"
+								name="assessmentStatus" maxlength="256"
+								ng-model="riskAssessmentDTO.assessmentStatus" disabled />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row" ng-show="isEditAssessmentGrid">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="col-md-5">Actual Cycle Start:</label>
+						<div class="col-md-7">
+							<div class="row">
+								<div class="col-md-5 changeWdhoncycle">
+									<input class="form-control"
+										ng-model="riskAssessmentDTO.cycleStartDate"
+										k-format="'MM/dd/yyyy'" disabled />
+								</div>
+								<div class="col-md-1">
+									<label class="control-label"> Close:</label>
+								</div>
+								<div class="col-md-5 changeWdhoncycle">
+									<input class="form-control customWidthDate"
+										ng-model="riskAssessmentDTO.cycleEndDate"
+										k-format="'MM/dd/yyyy'" disabled />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="challengeOutstand" class="col-md-5">Challenges
+							Outstanding:</label>
+						<div class="col-md-7">
+							<input type="text" class="form-control" id="challengeOutstand"
+								name="challengeOutstand" maxlength="256"
+								ng-model="riskAssessmentDTO.challengesOutstanding" disabled />
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="assessmentScope" class="col-md-5">Assessment Scope:</label>
+						<div class="col-md-7">
+							<textarea class="form-control" rows="3" ng-model="riskAssessmentDTO.assmtScopes"
+								maxlength="2000" disabled></textarea>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="assessmentType" class="col-md-5">Assessment
+							Type:</label>
+						<div class="col-md-7">
+							<input type="text" class="form-control" id="assessmentType"
+								name="assessmentType" maxlength="256"
+								ng-model="riskAssessmentDTO.assessmetnTypeName" disabled />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="indicativeele">
+				<div class="panel-footer">
+					<p class="panelFontSize" ng-hide="editMode">Indicative Data
+						Elements</p>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col-md-6 fieldHeight">
+						<div class="form-group">
+							<label for="erhDate" class="col-md-5">ERH Dates:</label>
+							<div class="col-md-7">
+								<input type="text" class="form-control" id="erhDate"
+									ng-model="riskAssessmentDTO.erhDate" name="erhDate" disabled />
+								<input type="text" class="form-control" id="erhDateKey"
+									ng-model="riskAssessmentDTO.erhDateKey" name="erhDateKey"
+									ng-show="false" />
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6 fieldHeight">
+						<div class="form-group">
+							<label for="oplossValDate" class="col-md-5"> OpLoss
+								Validation Dates:</label>
+							<div class="col-md-7" 
+									tooltip="{{riskAssessmentDTO.opLossValidationDate}}" 
+								  tooltip-trigger 
+								  tooltip-placement="top">
+								<input type="text" class="form-control" 
+									ng-model="riskAssessmentDTO.opLossValidationDate"
+									name="oplossValDate" id="oplossValDate" disabled />
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6 fieldHeight">
+						<div class="form-group">
+							<label for="issueFromDate" class="col-md-5">Issue Date
+								Range:</label>
+
+							<div class="col-md-7">
+								<div class="row">
+									<div class="col-md-5 changeWdhoncycle">
+										<input type="text" class="form-control"
+											ng-model="riskAssessmentDTO.issueFromDate"
+											name="issueFromDate" id="issueFromDate" disabled />
+									</div>
+									<div class="col-md-1">
+										<label class="control-label padd15"> To:</label>
+									</div>
+									<div class="col-md-5 changeWdhoncycle">
+										<input type="text" class="form-control ToDateWidth"
+											ng-model="riskAssessmentDTO.issueToDate" name="issueToDate"
+											id="issueToDate" disabled />
+									</div>
+
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6 fieldHeight">
+						<div class="form-group">
+							<label for="opLossFromDate" class="col-md-5">OpLoss Date
+								Range:</label>
+
+							<div class="col-md-7">
+								<div class="row">
+									<div class="col-md-5 changeWdhoncycle">
+										<input type="text" class="form-control"
+											ng-model="riskAssessmentDTO.opLossFromDate"
+											name="opLossFromDate" id="opLossFromDate" disabled />
+									</div>
+									<div class="col-md-1">
+										<label class="control-label padd15"> To:</label>
+									</div>
+									<div class="col-md-5 changeWdhoncycle">
+										<input type="text" class="form-control customWidthDate" name="opLossToDate"
+											id="opLossToDate" ng-model="riskAssessmentDTO.opLossToDate"
+											disabled />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6 fieldHeight">
+						<div class="form-group">
+							<label for="kriFromDate" class="col-md-5">KRI Date Range:</label>
+							<div class="col-md-7">
+								<div class="row">
+									<div class="col-md-5 changeWdhoncycle">
+										<input type="text" class="form-control" name="kriFromDate"
+											id="kriFromDate" ng-model="riskAssessmentDTO.kriFromDate"
+											disabled />
+									</div>
+									<div class="col-md-1">
+										<label class="control-label padd15"> To:</label>
+									</div>
+									<div class="col-md-5 changeWdhoncycle">
+										<input type="text" class="form-control ToDateWidth" name="kriToDate"
+											ng-model="riskAssessmentDTO.kriToDate" id="kriToDate"
+											disabled />
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+	</div>
+
+	</accordion-group> <accordion-group is-open="summaryRating.isOpen"> <accordion-heading>
+	<span class="panelFontSize"
+		ng-click="generateAccordionData(summaryRating.isOpen, 'summary')">Summary
+		Ratings</span> <i class="pull-right glyphicon"
+		ng-class="{'glyph-chevron-down': summaryRating.isOpen, 'glyph-chevron-right': !summaryRating.isOpen}"
+		ng-click="generateAccordionData(summaryRating.isOpen, 'summary')"></i>
+	</accordion-heading>
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group clearfix">
+				<div class="pull-right">
+				<span>
+					<button
+						require-control-point="QUESTIONNAIRE_EDIT,QUESTIONNAIRE_VIEW"
+						context-val-id="utilList" class="btn btn-default mousedwncall"
+						type="button" ng-click="editQuestionnaires()"
+						ng-disabled="riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_DELETED'">
+						View/Edit Full Questionnaire</button></span>
+					<span>
+					 <button require-control-point="RATINGS_EDIT,RATINGS_VIEW"
+						context-val-id="utilList" class="btn btn-default mousedwncall"
+						type="button" ng-click="editSummaryRatings()"
+						ng-disabled="riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_DELETED'">
+						View/Edit Ratings</button>
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group">
+				<div kendo-grid="summaryRatingHeader" options="summaryRatingOptions"
+					k-rebind="summaryRebind"></div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group">
+				<label class="col-sm-4"> Outstanding Audit and Regulatory
+					Issues </label>
+				<textarea class="form-control" rows="4"
+					ng-model="outstandingComments" maxlength="4000" disabled></textarea>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group">
+				<label class="col-sm-4"> What&rsquo;s Changed Cycle Over
+					Cycle </label>
+				<textarea class="form-control" rows="4" ng-model="cycleDesc"
+					maxlength="4000" disabled></textarea>
+			</div>
+		</div>
+	</div>
+	</accordion-group> <accordion-group is-open="keyConcern.isOpen" ng-click="loadTopRisks()"
+		disable-control-point="TOP_RISKS_VIEW" context-val-id="utilList"
+		ng-hide="TOP_RISKS_VIEW"> <accordion-heading>
+	<span class="panelFontSize"
+		ng-click="generateAccordionData(keyConcern.isOpen, 'toprisk')">Top
+		Risks</span> <i class="pull-right glyphicon"
+		ng-class="{'glyph-chevron-down': keyConcern.isOpen, 'glyph-chevron-right': !keyConcern.isOpen}"
+		ng-click="generateAccordionData(keyConcern.isOpen, 'toprisk')"></i> </accordion-heading>
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group">
+				<div class="row">
+					<div class="col-md-6 pull-right">
+						<button require-control-point="TOP_RISKS_ADD"
+							context-val-id="utilList"
+							class="btn btn-default pull-right mousedwncall"
+							ng-click="addTopRisk()"
+							ng-disabled="riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_FINAL' || riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_DELETED' || riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_ATTEST' || riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_SUBMITTED'">
+							Add Top Risk</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<!-- dummy span for edit value -->
+			<span disable-control-point="TOP_RISKS_EDIT" context-val-id="utilList"></span>
+			<div kendo-grid="topRiskGrid" k-options="topRisksOptions"
+				k-rebind="topRiskRebind"></div>
+		</div>
+	</div>
+	</accordion-group> <accordion-group is-open="challengeAccordion.isOpen"
+		disable-control-point="CHALLENGES_VIEW" context-val-id="utilList"
+		ng-hide="CHALLENGES_VIEW"> <accordion-heading>
+	<span class="panelFontSize"
+		ng-click="generateAccordionData(challengeAccordion.isOpen, 'challenges')">Challenges</span>
+	<i class="pull-right glyphicon"
+		ng-class="{'glyph-chevron-down': challengeAccordion.isOpen, 'glyph-chevron-right': !challengeAccordion.isOpen}"
+		ng-click="generateAccordionData(challengeAccordion.isOpen, 'challenges')"></i>
+	</accordion-heading>
+
+	<div class="row">
+		<div class="col-md-10">
+			<div class="form-group clearfix">
+				<p>Challenges are significant risk concerns that require FLU/CF
+					risk reduction activities and/or disparate points of view on the
+					risk and control environment between Risk and the FLU/CF. A
+					challenge may relate to risks and/or controls, ratings, risk
+					reduction activities, and risk acceptance</p>
+			</div>
+		</div>
+
+		<div class="col-md-2">
+			<div class="form-group clearfix">
+				<button require-control-point="CHALLENGES_ADD"
+					context-val-id="utilList"
+					class="btn btn-default pull-right mousedwncall"
+					ng-click="addChallenge('N',null)"
+					ng-disabled="riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_FINAL' || riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_DELETED' || riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_ATTEST' || riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_SUBMITTED'">
+					Add Challenge</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12 fieldHeight">
+			<span class="{{challengeStatusClass}}" ng-if="challengeStatusInfo"><strong>{{challengeStatusInfo}}</strong></span>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<!-- dummy span for edit value -->
+			<span disable-control-point="CHALLENGES_EDIT" context-val-id="utilList"></span>
+			<span disable-control-point="RCSA_CHLNG_RSP_EDIT" context-val-id="utilList"></span>
+			<div kendo-grid="challengesHeader" k-options="challengesOptions"
+				k-rebind="challengesRebind" class="grid-Header-Cell"></div>
+		</div>
+	</div>
+	</accordion-group> <accordion-group is-open="attestationAccordion.isOpen"
+		disable-control-point="ATTESTOR_VIEW" context-val-id="utilList"
+		ng-hide="ATTESTOR_VIEW"> <accordion-heading>
+	<span class="panelFontSize"
+		ng-click="generateAccordionData(attestationAccordion.isOpen, 'attestation')">Attestation</span>
+	<i class="pull-right glyphicon"
+		ng-class="{'glyph-chevron-down': attestationAccordion.isOpen, 'glyph-chevron-right': !attestationAccordion.isOpen}"
+		ng-click="generateAccordionData(attestationAccordion.isOpen, 'attestation')"></i>
+	</accordion-heading>
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group clearfix">
+				<button class="btn btn-default pull-right mousedwncall"
+					ng-click="addAttestor()"
+					require-control-point="ATTESTOR_EDIT,ATTESTOR_DELETE"
+					context-val-id="utilList"
+					ng-disabled="riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_FINAL' || riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_DELETED' || riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_SUBMITTED' ">
+					Add/Edit Attester</button>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div kendo-grid="attestationGrid" options="attestationOptions"
+				k-rebind="attestRebind"></div>
+		</div>
+	</div>
+	</accordion-group> <accordion-group is-open="checkListAccordion.isOpen"
+		disable-control-point="OR_CHECKLIST_VIEW" context-val-id="utilList"
+		ng-hide="OR_CHECKLIST_VIEW"> <accordion-heading>
+	<span class="panelFontSize"
+		ng-click="generateAccordionData(checkListAccordion.isOpen, 'opcheckgrid')">Checklist
+		& Findings</span> <i class="pull-right glyphicon"
+		ng-class="{'glyphicon glyph-chevron-down': checkListAccordion.isOpen, 'glyphicon glyph-chevron-right': !checkListAccordion.isOpen}"
+		ng-click="generateAccordionData(checkListAccordion.isOpen, 'opcheckgrid')"></i>
+	</accordion-heading>
+	<div kendo-tab-strip k-content-urls="[ null, null]">
+		<ul>
+			<li class="k-state-active"><a href="">OpRisk Checklist</a></li>
+			<li><a href=""
+				ng-click="generateAccordionData(false, 'corcheckgrid')">COR
+					Checklist</a></li>
+		</ul>
+		<div class="row gridMargin" id="opr">
+			<form class="form-horizontal" role="form">
+				<!-- dummy span for edit value -->
+				<span disable-control-point="OR_CHECKLIST_EDIT" context-val-id="utilList"></span>
+				<div kendo-grid="opChecklistHeader"
+					class="maxheightfix verticalScroll" options="opChecklistOptions"
+					k-rebind="opChecklistRebind"></div>
+			</form>
+		</div>
+		<div class="row gridMargin" id="cor">
+			<form class="form-horizontal" role="form">
+				<!-- dummy span for edit value -->
+				<span disable-control-point="COR_CHECKLIST_EDIT" context-val-id="utilList"></span>
+				<span disable-control-point="COR_RESPONSE_EDIT" context-val-id="utilList"></span>
+				<div kendo-grid="corChecklistHeader"
+					class="maxheightfix adsthgt verticalScroll"
+					options="corChecklistOptions" k-rebind="updateCorChallenges"></div>
+			</form>
+		</div>
+	</div>
+	</accordion-group> <accordion-group is-open="documentAccordion.isOpen"
+		disable-control-point="SUPPORT_DOC_VIEW" context-val-id="utilList"
+		ng-hide="SUPPORT_DOC_VIEW"> <accordion-heading>
+	<span class="panelFontSize"
+		ng-click="generateAccordionData(documentAccordion.isOpen, 'docs')">Supporting
+		Documentation</span> <i class="pull-right glyphicon"
+		ng-class="{'glyph-chevron-down': documentAccordion.isOpen, 'glyph-chevron-right': !documentAccordion.isOpen}"
+		ng-click="generateAccordionData(documentAccordion.isOpen, 'docs')"></i>
+	</accordion-heading>
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group clearfix">
+			<span>
+				<button class="btn btn-default pull-right mousedwncall"
+					require-control-point="SUPPORT_DOC_ADD" context-val-id="utilList"
+					ng-click="addDocument()"
+					ng-disabled="riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_FINAL' || riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_DELETED' || riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_CANCELLED'">
+					Add Document</button>
+			</span>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<!-- dummy span for edit value -->
+			<span disable-control-point="SUPPORT_DOC_EDIT" context-val-id="utilList"></span>
+			<div kendo-grid="documentGrid" options="assessmentDocumentOptions"
+				k-rebind="docsRebind"></div>
+		</div>
+	</div>
+	</accordion-group> </accordion>
+
+	<div class="panel panel-default">
+		<div class="panel-heading panelFontSize">Audit</div>
+		<div class="panel-body">
+			<div class="audit-block formFooter">
+				<div class="col-md-12">
+					<div class="form-group col-md-6 fieldHeight">
+						<p class="col-md-7 audit-block">Created By:</p>
+						<div>{{riskAssessmentDTO.createWorkerText}}</div>
+					</div>
+					<div class="form-group col-md-6 fieldHeight">
+						<p class="col-md-6 audit-block">RAP Cycle ID:</p>
+						<div>{{riskAssessmentDTO.riskAssessmentCycleKey}}</div>
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div class="form-group col-md-6 fieldHeight">
+						<p class="col-md-7 audit-block">Created Date:</p>
+						<div>{{riskAssessmentDTO.createdTimestampString}}</div>
+					</div>
+					<div class="form-group col-md-6 fieldHeight">
+						<p class="col-md-6 audit-block">RAP Assessment ID:</p>
+						<div>{{riskAssessmentDTO.riskAssessmentKey}}</div>
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div class="form-group col-md-6 fieldHeight">
+						<p class="col-md-7 audit-block">Modified by:</p>
+						<div>{{riskAssessmentDTO.modifiedUserText}}</div>
+					</div>
+					<div class="form-group col-md-6 fieldHeight">
+						<p class="col-md-6 audit-block">Modified Date:</p>
+						<div>{{riskAssessmentDTO.modifiedTimestampString}}</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<div class="panel-footer">
+		<button class="btn btn-default" type="button"
+			ng-click="handleCancel()">Cancel</button>
+		<div class="pull-right">
+			<span>
+				<button require-control-point="RCSA_CYCLE_EDIT"
+					context-val-id="utilList" class="btn btn-primary mousedwncall"
+					type="button" ng-click="updateAssessment()"
+					ng-disabled="editAssessmentInfoForm.$invalid || !disableUpdateBtn || riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_DELETED'"
+					ng-hide="riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_FINAL'"
+					ng-class="{disableSaveCls:!disableUpdateBtn || editAssessmentInfoForm.$invalid || riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_FINAL'}">
+					Update</button>
+			</span> <span
+				ng-if="riskAssessmentDTO.assessmentStatusLookUpCode == 'RA_ASES_IN_PROGRESS' || riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_QA'">
+				<button require-control-point="START_ATTEST_EDIT"
+					context-val-id="utilList" class="btn btn-primary mousedwncall"
+					type="button"
+					ng-click="updateAssessmentStatus('VALDT_ASSMT_ATTSTN')"
+					ng-disabled="riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_DELETED'">
+					Start Attestation</button>
+			</span> <span
+				ng-if="riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_ATTEST'">
+				<button require-control-point="RETURN_ASSESS_EDIT"
+					context-val-id="utilList" class="btn btn-primary mousedwncall"
+					type="button"
+					ng-click="updateAssessmentStatus('RA_ASES_IN_PROGRESS')"
+					ng-disabled="riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_DELETED'">
+					Return to In Progress</button>
+			</span> <span
+				ng-if="riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_ATTEST'">
+				<button require-control-point="SUBMIT_ASSESS_EDIT"
+					context-val-id="utilList" class="btn btn-primary mousedwncall"
+					type="button" ng-click="updateAssessmentStatus('VALDT_ASSMT_SBMT')"
+					ng-disabled="riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_DELETED'">
+					Submit to COR</button>
+			</span> 
+			<span
+				ng-if="riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_SUBMITTED' || (riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_FINAL' && riskAssessmentDTO.cycleStatusLookUpCode=='RA_OPEN')">
+				<button require-control-point="RETURN_ASSESS_EDIT"
+					context-val-id="utilList" class="btn btn-primary mousedwncall"
+					type="button" ng-click="updateAssessmentStatus('RA_ASES_QA')"
+					ng-disabled="riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_DELETED'">
+					Return to FLU / CF</button>
+			</span> <span
+				ng-if="riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_SUBMITTED'">
+				<button require-control-point="FINALIZE_ASSESS_EDIT"
+					context-val-id="utilList" class="btn btn-primary mousedwncall"
+					type="button" ng-click="updateAssessmentStatus('RA_ASES_FINAL')"
+					ng-disabled="riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_DELETED'">
+					Finalize Assessment</button>
+			</span> <span
+				ng-if="riskAssessmentDTO.assessmentStatusLookUpCode!=='RA_ASES_FINAL' && riskAssessmentDTO.assessmentStatusLookUpCode!=='RA_ASES_DELETED'">
+				<button require-control-point="DELETE_ASSESS_EDIT"
+					context-val-id="utilList" class="btn btn-danger mousedwncall"
+					type="button" ng-click="updateAssessmentStatus('RA_ASES_DELETED')"
+					ng-disabled="riskAssessmentDTO.assessmentStatusLookUpCode=='RA_ASES_DELETED'">
+					Delete</button>
+			</span>
+		</div>
+	</div>
+</form>
+	<div kendo-window="confirmationWin" options="confirmationWinOptions" k-resizable="false"
+		class="confirmationWin"></div>
+	<div kendo-window="viewDocumentWin" options="documentWinOptions" k-resizable="false"
+		k-modal="true"></div>
+	<!-- <div kendo-window="viewChallengeWin" options="challengeWinOptions" k-modal="true"></div> -->
+	<div kendo-window="opChecklistEditWin" options="opChecklistEditOptions" k-resizable="false"
+		k-modal="true"></div>
+	<div kendo-window="corChecklistEditWin" k-resizable="false"
+		options="corChecklistEditOptions" k-modal="true"></div>
+	<div kendo-window="viewTopRiskWin" options="topRiskWinOptions" k-resizable="false"
+		k-modal="true"></div>
+	<div kendo-window="viewEditAttestorWin" k-resizable="false"
+		options="addEditAttestorOptions" k-modal="true"></div>
+	<div kendo-window="viewAttachedDocWin" options="attachedDocOptions" k-resizable="false"
+		k-modal="true"></div>
+	<div kendo-window="viewPrcsLvlRiskWin" options="viewPrcsLvlRiskOptions" k-resizable="false"
+		k-modal="true"></div>
+</div>
+<div kendo-window="summaryRatingRationaleModal" k-title="'Rationale'" k-resizable="false"
+	k-width="500" k-height="180" k-visible="false" k-draggable="false"
+	k-content="{ url: 'views/editRcsaSummaryRating/summaryRationale.html' }"
+	k-on-open="summaryWin = true" k-modal="true"
+	k-on-close="summaryWin = false"></div>
+	
+	<div kendo-window="alertMessageListModal" k-title="'Outstanding Items'" k-resizable="false"
+	k-width="400" k-visible="false" k-draggable="false"
+	k-content="{ url: 'views/assessment/alertMessageListModal.html' }"
+	 k-modal="true"
+	></div>

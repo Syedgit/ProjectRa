@@ -1,0 +1,130 @@
+<div class="container-fluid">
+	<div kendo-window="confirmationWin" options="confirmationWinOptions"
+		class="confirmationWin" k-resizable="false"></div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="bank-header-banner">
+				<h1>Risk Assessment Platform</h1>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<nav ng-show="user.isAuthenticated"
+				class="navbar navbar-default bank-multiRowHeader-nav"
+				role="navigation">
+				<ul kendo-menu k-orientation="horizontal" k-rebind="'horizontal'">
+					<li><a ui-sref="app.home"
+						ng-click="showConfirmationOnChange('/')"> <orcit-icon
+								icon="home"></orcit-icon>
+					</a></li>
+					<li><a href=""> Process Risk &amp; Control Inventory </a>
+						<ul class="submenu">
+							<li ng-show="PROCESS_ADD && prcMenuLockDown"><a
+								ui-sref="app.createProcess"> Create New Process </a></li>
+							<li ng-show="!(PROCESS_ADD && prcMenuLockDown)" disabled>Create
+								New Process</li>
+
+							<li ng-show="RISK_ADD && prcMenuLockDown"><a
+								ui-sref="app.createRisk"> Create New Unaligned Risk </a></li>
+							<li ng-show="!(RISK_ADD && prcMenuLockDown)" disabled>Create
+								New Unaligned Risk</li>
+
+							<li ng-show="CONTROL_ADD && prcMenuLockDown"><a
+								ui-sref="app.createControl"> Create New Unaligned Control </a></li>
+							<li ng-show="!(CONTROL_ADD && prcMenuLockDown)" disabled>Create
+								New Unaligned Control</li>
+
+							<li ng-show="PROCESS_VIEW || RISK_VIEW || CONTROL_VIEW"><a
+								ui-sref="app.search"> View/Search Inventory </a></li>
+							<li ng-show="!(PROCESS_VIEW || RISK_VIEW || CONTROL_VIEW)"
+								disabled>View/Search Inventory</li>
+
+							<li ng-show="E2E_VIEW"><a ui-sref="app.viewEndToEndEpcf">
+									View End-to-End EPCF </a></li>
+							<li ng-show="!E2E_VIEW" disabled>View End-to-End EPCF</li>
+
+							<li ng-show="E2E_VIEW"><a ui-sref="app.viewEndToEndErh">
+									View End-to-End ERH </a></li>
+							<li ng-show="!E2E_VIEW" disabled>View End-to-End ERH</li>
+
+							<li ng-show="UPLOAD_VIEW || (UPLOAD_EDIT && prcMenuLockDown)">
+								<a ui-sref="app.prcUpload"> Upload Process Inventory / PRT </a>
+							</li>
+							<li ng-show="!(UPLOAD_VIEW || (UPLOAD_EDIT && prcMenuLockDown))"
+								disabled>Upload Process Inventory / PRT</li>
+						</ul></li>
+					<li><a href=""> Risk Assessment </a>
+						<ul class="submenu">
+							<li ng-show="RCSA_CYCLE_ADD || RCSA_CYCLE_EDIT"><a
+								ui-sref="app.createRcsaCycle"> Create RCSA Cycle </a></li>
+							<li ng-show="!(RCSA_CYCLE_ADD || RCSA_CYCLE_EDIT)" disabled>Create
+								RCSA Cycle</li>
+
+							<li ng-show="RCSA_CYCLE_VIEW"><a
+								ui-sref="app.searchRcsaCycle"> View/Search Cycles </a></li>
+							<li ng-show="!RCSA_CYCLE_VIEW" disabled>View/Search Cycles</li>
+
+							<li ng-show="RSK_ASES_VIEW"><a
+								ui-sref="app.viewRcsaAssessment"> View/Search Assessments </a></li>
+							<li ng-show="!RSK_ASES_VIEW" disabled>View/Search
+								Assessments</li>
+						</ul></li>
+					<li><a href=""> Administration </a>
+						<ul class="submenu">
+							<li ng-show="ADMIN_VIEW || ADMIN_EDIT"><a
+								ui-sref="app.adminNotification">Notifications</a></li>
+							<li ng-show="!(ADMIN_VIEW || ADMIN_EDIT)" disabled>Notifications</li>
+							<li ng-show="ADMIN_VIEW || ADMIN_EDIT"><a
+								ui-sref="app.prtQuestionnaireMaintenance">PRT Questionnaire
+									Maintenance</a></li>
+							<li ng-show="!(ADMIN_VIEW || ADMIN_EDIT)" disabled>PRT
+								Questionnaire Maintenance</li>
+						</ul></li>
+					<li style="margin-right: 0;" class="nav navbar-nav navbar-right"
+						ng-show="user.isAuthenticated"><a>
+							{{user.customUserDetails.workFullName}} </a>
+						<ul class="submenu">
+							<li><a ui-sref="app.logout"> Logout </a></li>
+						</ul></li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	<div id="main-content" style="padding-bottom: 3rem;" ng-if="user">
+		<div class="container-fluid">
+			<breadcrumbs></breadcrumbs>
+			<div ui-view class="main-Content-Margin"></div>
+		</div>
+	</div>
+	<div class="row bank-footer-container">
+		<nav id="main-footer" role="navigation" class="col-md-12">
+			<p class="col-md-8 tagLine">
+				We&rsquo;re better when we&rsquo;re connected <sup>&reg;</sup>
+			</p>
+			<p class="col-md-8 copyright">Bank of America N.A. Member FDIC
+				&copy;{{year}} Bank of America Corporation. All rights reserved.</p>
+			<div class="col-md-4">
+				<div class="pull-right">
+					<img alt="Bank of America logo" src="images/BAC_logo.png" />
+				</div>
+			</div>
+			<div class="col-md-3 build-details" ng-show="buildDetails.version">
+				<small>Version: {{buildDetails.version}}</small>
+			</div>
+			<div class="col-md-3 build-details"
+				ng-show="buildDetails.scmBranch.indexOf('$') === -1">
+				<small>SVN Branch: {{buildDetails.scmBranch}}</small>
+			</div>
+			<div class="col-md-3 build-details"
+				ng-show="buildDetails.scmRevision.indexOf('$') === -1">
+				<small>Revision: {{buildDetails.scmRevision}}</small>
+			</div>
+			<div class="col-md-3 build-details"
+				ng-show="buildDetails.buildTimestamp.indexOf('$') === -1">
+				<small>Build Time: {{buildDetails.buildTimestamp | date}}</small>
+			</div>
+		</nav>
+	</div>
+</div>
+

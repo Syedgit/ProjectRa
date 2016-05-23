@@ -1,0 +1,64 @@
+.orcit-loader-wrapper {
+    position: static;
+}
+
+.orcit-loader-overlay {
+    background: rgba(0,0,0,0.25);
+    position: absolute;
+    z-index: 10035;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+}
+
+body > .orcit-loader-overlay {
+    position: fixed;
+}
+
+.orcit-loader-spinner {
+    align-self: center;
+    -webkit-animation:rotate 1.5s infinite steps(12);
+    -moz-animation:rotate 1.5s infinite steps(12);
+    -o-animation:rotate 1.5s infinite steps(12);
+    animation:rotate 1.5s infinite steps(12);
+}
+
+@-webkit-keyframes rotate {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@-moz-keyframes rotate {
+    from {
+        -moz-transform: rotate(0deg);
+    }
+    to {
+        -moz-transform: rotate(360deg);
+    }
+}
+
+@-o-keyframes rotate {
+    from {
+        -o-transform: rotate(0deg);
+    }
+    to {
+        -o-transform: rotate(360deg);
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+

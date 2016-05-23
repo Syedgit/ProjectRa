@@ -1,0 +1,42 @@
+	<div class="modalForm owner">
+		<div class="modalBorder">
+			<div class="row fieldHeight">
+					<div class="col-md-3">
+						<label for="challengerFirstName">First / Last Name:</label>
+					</div>
+					<div class="col-md-3">
+						<input type="text" class="form-control" id="challengerFirstName" ng-model="searchObj.firstName" maxlength="216" />
+					</div>
+					<div class="col-md-3">
+						<input type="text" class="form-control" id="challengerLastName" ng-model="searchObj.lastName" maxlength="216" />
+
+					</div>
+			</div>
+			<div class="row fieldHeight">
+					<div class="col-md-3">
+						<label for="challengerMail">Email Address:</label>
+					</div>
+					<div class="col-md-6">
+						<input type="text" class="form-control" id="challengerMail" ng-model="searchObj.emailId" maxlength="512" />
+					</div>
+			</div>
+			<div class="row">
+					<div class="col-md-3">
+						<label for="challengerId">NBK ID:</label>
+					</div>
+					<div class="col-md-6">
+						<input type="text" class="form-control" id="challengerId" ng-model="searchObj.nbkId" maxlength="127" />
+					</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<button class="btn btn-success pull-right mousedwncall" type="button" ng-click="searchchallenger()">
+						Search</button>
+				</div>
+			</div>
+			<div class="row searchModalGridPadding">
+				<div ng-show="showSearchGrid" kendo-grid="ChallengerSearch" options="ChallengerSearchOptions" k-rebind="getChallengerSearchResultGrid"></div>
+			</div>
+	</div>
+</div>
+

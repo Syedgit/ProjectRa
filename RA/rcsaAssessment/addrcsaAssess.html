@@ -1,0 +1,300 @@
+<div class="panel panel-default">
+	<div class="panel-heading panelFontSize">
+		<span class="panelFontSize" ng-if="!editAsmt">Add Assessment</span>
+		<span class="panelFontSize" ng-if="editAsmt">Edit Assessment</span>
+	</div>
+	<div class="panel-body formHeight">
+		<form id="addAssessmentForm" name="addAssessment" novalidate role="form" class="form-horizontal">
+		<div>
+			<p class="status {{ validationClass }}">{{validationMessage }}</p>
+		</div>
+		<div class="row">
+                <div class="col-md-12 fieldHeight">
+                        <span class="{{statusClass}}" ng-if="statusInfo"><strong>{{statusInfo}}</strong></span>
+                </div>
+        </div>
+			<div class="row" disable-control-point="ASSESSMENT_EDIT" context-val-id="utilList">
+				<div class="form-group col-md-6 fieldHeight">
+					<label for="cycleName" class="col-md-6">Cycle Name:</label>
+					<div class="col-md-6">
+						<input type="text" class="form-control" id="cycleName"
+							name="cycleName" maxlength="256" 
+							ng-model="riskAssessmentDTO.cycleName" disabled
+							data-tooltip-html-unsafe="<div>{{256 - riskAssessmentDTO.cycleName.length}} characters left</div>"
+							tooltip-trigger="{{{true: 'focus', false: 'never'}[ riskAssessmentDTO.cycleName.length >= 0 || riskAssessmentDTO.cycleName.length == null ]}}"
+							tooltip-placement="top" tooltip-class = "bluefill">
+					</div>
+				</div>
+				<div class="form-group col-md-6 fieldHeight">
+					<label for="assessmentName" class="col-md-4 required">Assessment
+						Name :</label>
+					<div class="col-md-6">
+						<input type="text" class="form-control" id="assessmentName" required
+							name="assessmentName"
+							maxlength="256" ng-model="riskAssessmentDTO.assessmentName"
+							ng-disabled="disableViewAssessmentview" 
+							data-tooltip-html-unsafe="<div>{{256 - riskAssessmentDTO.assessmentName.length}} characters left</div>"
+							tooltip-trigger="{{{true: 'focus', false: 'never'}[ riskAssessmentDTO.assessmentName.length >= 0 || riskAssessmentDTO.assessmentName.length == null ]}}"
+							tooltip-placement="top" tooltip-class = "bluefill" />
+						<p class="text-danger"
+							ng-show="addAssessment.assessmentName.$touched && addAssessment.assessmentName.$error.required">Assessment
+							Name is required</p>
+					</div>
+				</div>
+			</div>
+			<div class="row" disable-control-point="ASSESSMENT_EDIT" context-val-id="utilList">
+				<div class="form-group col-md-6 fieldHeight">
+					<label for="cycleName" class="col-md-6 required">Scope Type :</label>
+					<div class="col-md-6" ng-show="disableViewAssessmentview">
+						<input type="text" class="form-control  customReadOnly" id="scopeTypeRead"
+							ng-model="riskAssessmentDTO.scopeTypeName" name="scopeTypeRead"
+							disabled/>
+					</div>
+					<div class="col-md-6" ng-show="!disableViewAssessmentview">
+					<select class="form-control" 
+							name="assessmentType"
+							ng-model="riskAssessmentDTO.scopeType" id="assessmentType" 
+							ng-options="assessmentTypeOption.id as assessmentTypeOption.text for assessmentTypeOption in assessmentTypeOptions"
+							ng-disabled="editAsmt"  ng-change="assessmentType()" required >
+							 <option value="">Select...</option>
+					</select>
+						<p class="text-danger"
+							ng-show="addAssessment.assessmentType.$touched && addAssessment.assessmentType.$error.required">Scope
+							Type is required</p>
+					</div>
+				</div>
+				<div class="form-group col-md-6 fieldHeight">
+				<label for="riskAssesLevelLookupCode" class="col-md-4 required">Assessment Type :</label>
+						<div class="col-md-6">
+								 <select
+                     class="form-control"
+                     name="riskAssesLevelLookupCode"
+                     id="riskAssesLevelLookupCode"
+                     ng-model="riskAssessmentDTO.riskAssesLevelLookupCode"
+                     ng-disabled="disableAssessmentType || disableViewAssessmentview" required
+                     ng-options="assessmentOption.id as assessmentOption.text for assessmentOption in assessmentOptions">
+                    <option value="">
+                        Select...
+                     </option>
+                 </select>
+								<p class="text-danger"
+							ng-show="addAssessment.riskAssesLevelLookupCode.$touched && addAssessment.riskAssesLevelLookupCode.$error.required">Assessment
+							Type is required</p>
+							</div>
+					</div>
+			</div>
+			<div class="row"></div>
+			<div class="row" ng-if="showGeoDropdown" disable-control-point="ASSESSMENT_EDIT" context-val-id="utilList">
+				<div class="form-group col-md-6 fieldHeight">
+					<label for="AvlblGeo" class="col-md-6 required">Available
+						Geography(s) :</label>
+					<div class="col-md-6">
+						<orcit-multiselect-treeview
+							ng-model="riskAssessmentDTO.geoLocationLst" 
+							name="geoLocationLst"
+						    class="orcitMultiselectTreeview"
+							id="geoLocationLst"
+							o-disable-childrens="true"
+							ng-disabled="disableViewAssessmentview || ASSESSMENT_EDIT"
+							o-tree-data="geoTreeviewOption"
+							ng-model-options="{updateOn: 'blur'}">
+						</orcit-multiselect-treeview>
+						<p class="text-danger"
+							ng-show="addAssessment.geoLocationLst.$dirty && addAssessment.geoLocationLst.$error.required">Geographical
+							location is required</p>
+					</div>
+				</div>
+			</div>
+			<div class="row" ng-if="showLegalDropdown" disable-control-point="ASSESSMENT_EDIT" context-val-id="utilList">
+				<div class="form-group col-md-6 fieldHeight">
+					<label for="legalentry" class="col-md-6 required">Legal
+						Entity(s) :</label>
+					<div class="col-md-6">
+						<orcit-multiselect-treeview
+							ng-model="riskAssessmentDTO.legalEntity"
+							class="orcitMultiselectTreeview" 
+							name="legalEntity"
+							id="legalEntity"
+							ng-class="{'disabled': disableLegalEntity}" 
+							o-max-selectable="1"
+							o-disable-parents="true"
+							ng-disabled="disableViewAssessmentview || ASSESSMENT_EDIT" 
+							o-tree-data="legalTreeviewOption"
+							ng-model-options="{updateOn: 'blur'}">
+						</orcit-multiselect-treeview>
+						<p class="text-danger"
+							ng-show="addAssessment.legalEntity.$dirty && addAssessment.legalEntity.$error.required">Legal
+							Entity is required</p>
+					</div>
+				</div>
+			</div>
+			<div class="row" ng-if="showBusDropdown">
+				<div class="form-group col-md-6 fieldHeight">
+					<label for="busSegments" class="col-md-6 required">ERH(s) :</label>
+					<div class="col-md-6" disable-control-point="ASSESSMENT_EDIT" context-val-id="utilList">
+						<orcit-multiselect-treeview
+							ng-model="riskAssessmentDTO.erhList" 
+						    class="orcitMultiselectTreeview"
+							name="erhList"
+							id="erhList"
+							ng-disabled="disableViewAssessmentview || ASSESSMENT_EDIT"
+							o-tree-data="erhTreeviewOption"
+							ng-model-options="{updateOn: 'blur'}">
+						</orcit-multiselect-treeview>
+						<p class="text-danger"
+							ng-show="addAssessment.erhList.$dirty && addAssessment.erhList.$error.required">ERH
+							is required</p>
+					</div>
+				</div>
+			</div>
+			<div class="row" ng-show="showLegalDropdown || showGeoDropdown" disable-control-point="ASSESSMENT_EDIT" context-val-id="utilList">
+				<div class="form-group col-md-6 fieldHeight">
+					<div class="form-group col-md-7 fieldHeight">
+						<label class="col-md-12 required">Do you want to include
+							all ERH Processes based on the selection above?</label>
+					</div>
+					<div class="form-group col-md-3 fieldHeight">
+						<label class="radio-inline"><input type="radio"
+							name="includeERHFlag" id="includeERHFlagYes" ng-value="'Y'" ng-disabled="disableViewAssessmentview || ASSESSMENT_EDIT"
+							ng-model="riskAssessmentDTO.erhFlag" ng-change="mandateAllERH()">Yes </label>
+						<label class="radio-inline"><input type="radio"
+							name="includeERHFlag" id="includeERHFlagNo" ng-value="'N'" ng-disabled="disableViewAssessmentview || ASSESSMENT_EDIT"
+							ng-model="riskAssessmentDTO.erhFlag" ng-change="mandateAllERH()">No </label>
+						<p class="text-danger"
+							ng-show="addAssessment.includeERHFlag.$touched && addAssessment.includeERHFlag.$error.required">Assessment
+							Name is required</p>
+					</div>
+				</div>
+				<div class="form-group col-md-6 fieldHeight" ng-if="showRefineERH">
+					<label for="selectedERHS" class="col-md-4 required">Select
+						ERH(s) :</label>
+					<div class="col-md-6">
+						<orcit-multiselect-treeview
+							ng-model="riskAssessmentDTO.filteredErhList"
+							name="filteredErhList"
+						    class="orcitMultiselectTreeview"
+							id="filteredErhList"
+							ng-disabled="disableViewAssessmentview || ASSESSMENT_EDIT"
+							o-tree-data="refinedErhOption" 
+							ng-model-options="{updateOn: 'blur'}">
+						</orcit-multiselect-treeview>
+						<p class="text-danger"
+							ng-show="addAssessment.filteredErhList.$dirty && addAssessment.filteredErhList.$error.required">ERH
+							is required</p>
+					</div>
+				</div>
+			</div>
+			<div class="row" disable-control-point="ASSESSMENT_EDIT" context-val-id="utilList">
+				<div class="form-group col-md-6">
+					<div class="col-md-6">
+						<label class="control-label required" for="rcsaOwner">RCSA
+							Owner :</label>
+					</div>
+					<div class="col-md-6">
+						<input type="text" class="form-control  customReadOnly" id="rcsaOwner" required
+							ng-model="riskAssessmentDTO.rcsaOwnerWorker" name="rcsaOwnerWorker"
+							ng-disabled="disableViewAssessmentview" placeholder="RCSA Owner"
+							ng-click="openRcsaOwner()" ng-model-options="{updateOn: 'blur'}" readonly="readonly"/>
+						<p class="text-danger"
+							ng-show="addAssessment.rcsaOwnerWorker.$touched && addAssessment.rcsaOwnerWorker.$error.required">RCSA
+							Owner is required</p>
+					</div>
+				</div>
+				<div class="form-group col-md-6 fieldHeight">
+					<label for="rcsaPreparer" class="col-md-4 required">RCSA
+						Preparer :</label>
+					<div class="col-md-6">
+						<input type="text" class="form-control  customReadOnly" id="rcsaPreparer" required
+							ng-model="riskAssessmentDTO.rcsaPreparerWorker" name="rcsaPreparerWorker"
+							ng-disabled="disableViewAssessmentview" placeholder="RCSA Preparer"
+							ng-click="openRcsaPreparer()" ng-model-options="{updateOn: 'blur'}" readonly="readonly"/>
+						<p class="text-danger"
+							ng-show="addAssessment.rcsaPreparerWorker.$touched && addAssessment.rcsaPreparerWorker.$error.required">RCSA
+							Preparer is required</p>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-md-6 fieldHeight">
+						<label for="dueDate" class="col-md-6 required">Due Date :</label>
+						<div class="dropdown col-md-6">
+							<input kendo-date-picker ng-model="riskAssessmentDTO.dueDate"
+								onkeydown="return false;" id="dueDate" name="dueDate"
+								ng-model-options="{updateOn: 'blur'}"  required k-format="'MM/dd/yyyy'"
+								ng-class="{disablebg:disableViewAssessmentview || ASSESSMENT_EDIT}"
+								 ng-disabled="disableViewAssessmentview || ASSESSMENT_EDIT"/>
+							<p class="text-danger"
+								ng-show="addAssessment.dueDate.$touched && addAssessment.dueDate.$error.required">Due
+								date is required</p>
+							<p class="text-danger" ng-show="addAssessment.dueDate.$error.dateRange"> Assessment due date can not be less than cycle due date</p>
+						</div>
+					</div>
+			</div>
+			<div class="row">
+				<label for="attesttorRoles" class="col-md-4 required">Attester Roles:</label>
+			</div>
+			<div class="row">
+			<div class=" col-md-12">
+				<div bac-multiselect available="attestorAvailablRoles" name="attesttorRoles"
+             		selected="attestorSelectedRoles" display-prop="roleName" header-name="Attester Roles" o-readonly="disableViewAssessmentview || ASSESSMENT_EDIT"></div>
+             		<p class="text-danger"
+							ng-show="attestorSelectedRoles.length==0">Attester Roles
+							 are required</p>
+			</div></div>
+		</form>
+	</div>
+</div>
+<div class="panel panel-default" ng-show="editMode">
+	<div class="panel-heading panelFontSize">Audit</div>
+	<div class="panel-body">
+		<div class="audit-block formFooter">
+			<div class="col-md-12">
+				<div class="form-group col-md-5 fieldHeight">
+					<p class="col-md-9 audit-block">Created By:</p>
+					<div class="col-md-3">{{TBD}}</div>
+				</div>
+				<div class="form-group col-md-5 fieldHeight">
+					<p class="col-md-6 audit-block">Original Source System:</p>
+					<div class="col-md-4">{{TBD}}</div>
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="form-group col-md-5 fieldHeight">
+					<p class="col-md-9 audit-block">Created Date:</p>
+					<div class="col-md-3 ">{{TBD}}</div>
+				</div>
+				<div class="form-group col-md-5 fieldHeight">
+					<p class="col-md-6 audit-block ">RAP Cycle ID:</p>
+					<div class="col-md-4 ">{{TBD}}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="panel-footer">
+	<button class="btn btn-default mousedwncall" type="button" ng-click="handleCancel()">Cancel</button>
+	<div class="pull-right">
+		<span><button require-control-point="ASSESSMENT_ADD,ASSESSMENT_EDIT" context-val-id="utilList" ng-disabled="addAssessment.$invalid || attestorSelectedRoles.length==0" 
+		class="btn btn-primary pull-right mousedwncall"
+		ng-hide="disableViewAssessmentview"
+		ng-class="{disableSaveCls:addAssessment.$invalid || attestorSelectedRoles.length==0}" type="button" ng-click="submit()">Save</button></span>
+	</div>
+</div>
+
+<div kendo-window="rcsaOwnerModal" k-title="'RCSA Owner Search'" k-width="650" k-resizable="false"
+	   k-visible="false" k-draggable="false"
+	k-content="{ url: 'views/rcsa/rcsaOwnerModal.html' }"
+	k-on-open="nameSearchwin = true" k-modal="true"
+	k-on-close="nameSearchwin = false"></div>
+
+
+<div kendo-window="rcsaPreparerModal" k-title="'RCSA Preparer Search'" k-resizable="false"
+	k-width="650" k-visible="false" k-draggable="false"
+	k-content="{ url: 'views/rcsa/rcsaPreparerModal.html' }"
+	k-on-open="perparerSearchwin = true" k-modal="true"
+	k-on-close="perparerSearchwin = false"></div>
+
+	<div kendo-window="confirmationWin" options="confirmationWinOptions" k-resizable="false"
+	class="confirmationWin"></div>
+
+

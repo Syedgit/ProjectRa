@@ -1,0 +1,13 @@
+ <div class="row progressStepbar">
+ 				<div>
+			    <ul class='nav nav-wizard'>
+			      <li ng-repeat="val in stepbarText" ng-class="{active:currentFlag>=val.id}">
+		               <a class="tab{{val.id}}">
+		               <span class="circleimg">{{val.id}}</span>
+		               {{val.text}}
+		               </a>
+		          </li>
+			    </ul>
+			    </div>
+ 
+ </div>

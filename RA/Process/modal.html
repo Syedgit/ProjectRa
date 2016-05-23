@@ -1,0 +1,105 @@
+<form name="epcfModelForm"  novalidate ng-cloak
+	class="border-box-sizing">
+<div class="modalForm">
+	<div class="modalBorder">
+<div class="row" ng-show="processDTO.currentEpcfText.length>0">
+			<div class="form-group col-md-12 ">
+				<label for="currentepcf" class="col-md-4">Current EPCF:
+					<span ng-show="processDTO.deactiveEPCFMessage.length>0" tooltip="{{processDTO.deactiveEPCFMessage}}"
+							tooltip-trigger tooltip-placement="top" id="deactiveCurEPCFMessageTooltip" class="pull-right">
+							<orcit-icon icon="warning" class="text-danger pull-right"></orcit-icon>
+					</span>
+					<span tooltip="{{processDTO.epcfToolTip}}" tooltip-trigger
+						 tooltip-placement="bottom" id="epcfToolTip" class="pull-right">
+						<orcit-icon icon="info" class="text-info pull-right"></orcit-icon>
+					</span>
+				</label>
+				<div class="col-md-7">
+					 <input type="text" class="form-control customReadOnly"
+							id="curepcf" ng-model="processDTO.currentEpcfText"
+							name="curepcf" readonly="readonly" 
+							ng-model-options="{updateOn: 'blur'}" placeholder="Current EPCF"/>
+			    </div>
+		    </div>
+		 </div>
+		<div class="row">
+			<div class="form-group col-md-12 ">
+				<label for="requestedEpcfToolTip" class="col-md-4 required">Requested EPCF:
+					<span tooltip="{{processDTO.requestedEpcfToolTip}}" tooltip-trigger
+						 tooltip-placement="bottom" id="requestedEpcfToolTip" class="pull-right">
+						<orcit-icon icon="info" class="text-info pull-right"></orcit-icon>
+					</span>
+				</label>
+				<div class="col-md-8">
+					<orcit-multiselect-treeview
+                        id="requestedEPCF"
+                        name="requestedEPCF"
+                        class="orcitMultiselectTreeview"
+                        ng-disabled="processDTO.requestedStatusLookupCode=='RA_GVRNC_STAT_PEND' || PROCESS_EDIT"
+                        ng-model="nonPersistentProcess.requestedEpcfKey"
+                        ng-required="true"
+                        o-disable-parents="true"
+                        o-max-selectable="1"
+                        o-menu-height="200"
+                        o-tree-data="epcfTreeData"
+                        placeholder="Select EPCF">
+                       </orcit-multiselect-treeview> 
+					<p class="text-danger"
+						ng-show="epcfModelForm.requestedEPCF.$dirty && epcfModelForm.requestedEPCF.$error.required">Requested EPCF
+						is required</p>
+			    </div>
+		    </div>
+		 </div>
+		 <div class="row">
+			<div class="form-group col-md-12">
+				<label for="comments" class="col-md-4">Requested EPCF Comments:</label>
+					<div class="col-md-8">
+						<textarea rows="4" class="form-control"
+							ng-model="processDTO.requestedEpcfComment" name="comments"
+							id="comments" placeholder="Requested EPCF Comments" maxlength="4000"
+							data-tooltip-html-unsafe="<div>{{4000 - processDTO.requestedEpcfComment.length}} characters left</div>"
+							tooltip-trigger="{{{true: 'focus', false: 'never'}[processDTO.requestedEpcfComment.length >= 0 || processDTO.requestedEpcfComment.length == null ]}}"
+							tooltip-placement="top" tooltip-class = "bluefill"
+							ng-disabled="processDTO.requestedStatusLookupCode=='RA_GVRNC_STAT_PEND'"></textarea>
+					</div>
+			</div>
+		 </div>
+<!-- 		<div class="row fieldHeight"> -->
+			<div class="row" ng-if="processDTO.requestedEpcfKey && processDTO.processGvrnAprvKy">
+				<div class="form-group col-md-12">
+					<label for="comments" class="col-md-4 required">Cancel EPCF Request:</label>
+					<div class="col-md-8">
+						<input type="checkbox" required ng-model="prcGvrnDTO.requestDecisionLookupCode"/>					
+					</div>
+				</div>
+			</div>
+			<div class="row" ng-if="processDTO.requestedEpcfKey && processDTO.processGvrnAprvKy">
+			<div class="form-group col-md-12">
+				<label for="cancelcomments" class="col-md-4 required">Comments:</label>
+					<div class="col-md-8">
+						<textarea rows="4" class="form-control"
+							ng-model="prcGvrnDTO.decisionCommentText" name="comments"
+							id="comments" placeholder="Comments" maxlength="4000"
+							required
+							data-tooltip-html-unsafe="<div>{{4000 - prcGvrnDTO.decisionCommentText.length}} characters left</div>"
+							tooltip-trigger="{{{true: 'focus', false: 'never'}[ prcGvrnDTO.decisionCommentText.length >= 0 || prcGvrnDTO.decisionCommentText .length == null ]}}"
+							tooltip-placement="top" tooltip-class = "bluefill"></textarea>
+					</div>
+			</div>
+		 </div>
+<!-- 		</div> -->
+		<div>
+</div>		 
+</div>
+<div class="modal-footer footerMargin">
+		<button class="btn btn-default mousedwncall" type="button" ng-mousedown="cancelEpcf()" >Cancel</button>
+		<button class="btn btn-primary mousedwncall" ng-disabled="epcfModelForm.$invalid" 
+			ng-class="{disableSaveCls:epcfModelForm.$invalid}"
+			type="button" ng-mousedown="submitEpcf()" 
+			ng-hide="prcGvrnDTO.requestDecisionLookupCode">Ok</button>
+		<button class="btn btn-primary mousedwncall" ng-disabled="epcfModelForm.$invalid" 
+			ng-class="{disableSaveCls:epcfModelForm.$invalid}"
+			type="button" ng-mousedown="cancelProcessGovernance()" 
+			ng-show="prcGvrnDTO.requestDecisionLookupCode">Update Decision</button>
+</div>
+</form>
